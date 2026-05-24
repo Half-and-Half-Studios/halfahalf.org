@@ -1,16 +1,130 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Half & Half Studios</title>
 
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
+      font-family: Georgia, serif;
+      background: #d9d9d9;
+      color: white;
+    }
+
+    .hero {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      overflow: hidden;
+      background: #d9d9d9;
+    }
+
+    .green-shape {
+      position: absolute;
+      inset: 0;
+      background: #1ca720;
+      clip-path: polygon(0 0, 100% 0, 0 100%);
+      z-index: 1;
+    }
+
+    .logo-small {
+      position: absolute;
+      top: 90px;
+      left: 55px;
+      width: 360px;
+      z-index: 3;
+      opacity: 0.9;
+    }
+
+    .moon {
+      position: absolute;
+      right: 8%;
+      top: 22%;
+      width: 260px;
+      z-index: 2;
+      filter: grayscale(100%);
+    }
+
+    .center-logo-section {
+      min-height: 100vh;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .center-logo {
+      width: min(750px, 90%);
+      opacity: 0.9;
+    }
+
+    .moon-section {
+      min-height: 100vh;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .large-moon {
+      width: min(650px, 90%);
+      filter: grayscale(100%);
+    }
+
+    @media (max-width: 700px) {
+      .hero {
+        min-height: 75vh;
+      }
+
+      .logo-small {
+        width: 260px;
+        top: 70px;
+        left: 30px;
+      }
+
+      .moon {
+        width: 190px;
+        right: 5%;
+        top: 38%;
+      }
+    }
+
+    @media (max-width: 450px) {
+      .logo-small {
+        width: 220px;
+        left: 20px;
+      }
+
+      .moon {
+        width: 150px;
+      }
     }
   </style>
 </head>
+
 <body>
-  <h1>Welcome to Half & Half Studios's Website</h1>
-  <p>more functions coming soon!</p>
+  <section class="hero">
+    <div class="green-shape"></div>
+
+    <img src="hahsbanner.png" alt="Half & Half Studios logo" class="logo-small" />
+    <img src="hahslogo.png" alt="Moon" class="moon" />
+  </section>
+
+  <section class="center-logo-section">
+    <img src="hahsbanner.png" alt="Half & Half Studios" class="center-logo" />
+  </section>
+
+  <section class="moon-section">
+    <img src="hahslogo.png" alt="Moon" class="large-moon" />
+  </section>
 </body>
 </html>
