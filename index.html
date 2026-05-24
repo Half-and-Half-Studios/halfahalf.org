@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Half & Half Studios</title>
 
+  <title>Half & Half Studios</title>
   <link rel="icon" type="image/png" href="hahslogo.png">
 
   <style>
@@ -40,13 +40,13 @@
       z-index: 1;
     }
 
-.logo-small {
-  position: absolute;
-  top: 85px;
-  left: 30px;
-  width: 590px;
-  max-width: 58vw;
-  z-index: 3;
+    .logo-small {
+      position: absolute;
+      top: 85px;
+      left: 55px;
+      width: 590px;
+      max-width: 58vw;
+      z-index: 3;
     }
 
     .moon {
@@ -57,6 +57,46 @@
       max-width: 38vw;
       z-index: 2;
       filter: grayscale(100%);
+    }
+
+    .continue-button {
+      position: absolute;
+      left: 50%;
+      top: 76%;
+      transform: translateX(-50%);
+      z-index: 4;
+
+      padding: 8px 18px;
+      border: 2px solid #1ca720;
+      border-radius: 10px;
+      background: #b9e8b8;
+      color: #1ca720;
+
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 24px;
+      font-weight: 900;
+      text-decoration: none;
+      letter-spacing: 1px;
+
+      opacity: 0;
+      animation: fadeInButton 1s ease forwards;
+      animation-delay: 1s;
+      transition: 0.2s ease;
+    }
+
+    .continue-button:hover {
+      background: #1ca720;
+      color: #b9e8b8;
+    }
+
+    @keyframes fadeInButton {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
     }
 
     .center-logo-section {
@@ -88,10 +128,10 @@
 
     @media (max-width: 900px) {
       .logo-small {
-        width: 390px;
-        max-width: 60vw;
-        top: 80px;
-        left: 35px;
+        width: 470px;
+        max-width: 68vw;
+        top: 75px;
+        left: 30px;
       }
 
       .moon {
@@ -99,6 +139,12 @@
         max-width: 45vw;
         top: 42%;
         right: 4%;
+      }
+
+      .continue-button {
+        top: 78%;
+        font-size: 21px;
+        padding: 7px 16px;
       }
     }
 
@@ -108,10 +154,10 @@
       }
 
       .logo-small {
-        width: 330px;
-        max-width: 85vw;
-        top: 70px;
-        left: 22px;
+        width: 390px;
+        max-width: 90vw;
+        top: 65px;
+        left: 18px;
       }
 
       .moon {
@@ -119,6 +165,13 @@
         max-width: 70vw;
         top: 52%;
         right: -20px;
+      }
+
+      .continue-button {
+        top: 80%;
+        font-size: 18px;
+        padding: 6px 14px;
+        border-radius: 8px;
       }
 
       .center-logo {
@@ -132,15 +185,21 @@
 
     @media (max-width: 400px) {
       .logo-small {
-        width: 280px;
-        top: 60px;
-        left: 18px;
+        width: 330px;
+        top: 58px;
+        left: 14px;
       }
 
       .moon {
         width: 230px;
         top: 54%;
         right: -35px;
+      }
+
+      .continue-button {
+        top: 82%;
+        font-size: 16px;
+        padding: 6px 12px;
       }
     }
   </style>
@@ -153,10 +212,10 @@
     <img src="hahsbanner.png" alt="Half & Half Studios logo" class="logo-small" />
     <img src="hahslogo.png" alt="Moon" class="moon" />
 
-    <a href="#logo-section" class="continue-button">CONTINUE</a>  
+    <a href="#logo-section" class="continue-button">CONTINUE</a>
   </section>
 
-  <section class="center-logo-section">
+  <section class="center-logo-section" id="logo-section">
     <img src="hahsbanner.png" alt="Half & Half Studios" class="center-logo" />
   </section>
 
