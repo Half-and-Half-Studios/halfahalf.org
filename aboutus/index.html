@@ -9,7 +9,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&display=swap" rel="stylesheet">
 
   <style>
     * {
@@ -46,6 +46,9 @@
       align-items: center;
       padding-top: 8px;
       flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      align-self: flex-start;
     }
 
     .sidebar-logo {
@@ -79,8 +82,7 @@
     .content {
       flex: 1;
       min-height: 100vh;
-      padding: 8px 20px 40px;
-      overflow: hidden;
+      padding: 8px 40px 70px;
     }
 
     .title {
@@ -89,6 +91,41 @@
       color: #f2f2f2;
       letter-spacing: 1px;
       line-height: 1;
+      margin-bottom: 40px;
+    }
+
+    .about-container {
+      max-width: 980px;
+    }
+
+    .about-section {
+      margin-bottom: 34px;
+    }
+
+    .about-section h2 {
+      color: #1cade7;
+      font-size: clamp(24px, 3vw, 36px);
+      font-weight: 900;
+      margin-bottom: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .about-section p {
+      color: #f2f2f2;
+      font-size: clamp(17px, 1.7vw, 22px);
+      font-weight: 400;
+      line-height: 1.55;
+      max-width: 900px;
+    }
+
+    .about-section a {
+      color: #1cade7;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .about-section a:hover {
+      text-decoration: underline;
     }
 
     .copyright {
@@ -105,7 +142,7 @@
       font-weight: 400;
       letter-spacing: 0.2px;
       z-index: 5;
-      background: transparent;
+      background: #3c3c3c;
     }
 
     @media (max-width: 800px) {
@@ -121,10 +158,13 @@
         justify-content: flex-start;
         gap: 12px;
         overflow-x: auto;
+        position: sticky;
+        top: 0;
+        z-index: 10;
       }
 
       .sidebar-logo {
-        width: 120px;
+        width: 135px;
         margin-bottom: 0;
         flex-shrink: 0;
       }
@@ -140,7 +180,11 @@
 
       .content {
         min-height: calc(100vh - 76px);
-        padding: 18px 18px 50px;
+        padding: 18px 18px 70px;
+      }
+
+      .title {
+        margin-bottom: 28px;
       }
 
       .copyright {
@@ -152,7 +196,7 @@
 
     @media (max-width: 480px) {
       .sidebar-logo {
-        width: 100px;
+        width: 115px;
       }
 
       .back-button {
@@ -165,6 +209,15 @@
         font-size: 40px;
       }
 
+      .about-section {
+        margin-bottom: 28px;
+      }
+
+      .about-section p {
+        font-size: 16px;
+        line-height: 1.55;
+      }
+
       .copyright {
         font-size: 11px;
       }
@@ -175,13 +228,53 @@
 <body>
   <div class="page">
     <aside class="sidebar">
-      <img src="../hahslogo.png" alt="Half & Half Studios logo" class="sidebar-logo">
+      <img src="../hahsbanner.png" alt="Half & Half Studios logo" class="sidebar-logo">
 
       <a href="../homepage/" class="back-button">BACK</a>
     </aside>
 
     <main class="content">
       <h1 class="title">ABOUT US</h1>
+
+      <div class="about-container">
+        <section class="about-section">
+          <h2>Our Story</h2>
+          <p>
+            Half &amp; Half Studios is a game development studio founded in 2023 by Seh and AxoTheDev,
+            formerly known as Sehelinda and Axoloch. The studio was originally created for
+            <a href="https://www.roblox.com/" target="_blank" rel="noopener noreferrer">Roblox</a>,
+            where we developed many game concepts, some of which were only ideas, while others were officially published.
+          </p>
+        </section>
+
+        <section class="about-section">
+          <h2>Our Community</h2>
+          <p>
+            Over time, Half &amp; Half Studios built a small but meaningful community, reaching 44 users
+            and 9 staff members. We also created a small
+            <a href="https://discord.com/" target="_blank" rel="noopener noreferrer">Discord</a>
+            community, with the goal of welcoming more members and growing alongside our players.
+          </p>
+        </section>
+
+        <section class="about-section">
+          <h2>Moving Forward</h2>
+          <p>
+            After 2.5 years of making games on Roblox, we decided in 2026 to private our previous projects
+            and begin creating games outside of the platform. This decision was made because of the Roblox
+            release fees and the limitations we faced while developing there.
+          </p>
+        </section>
+
+        <section class="about-section">
+          <h2>Our Goal</h2>
+          <p>
+            Our main goal is to create games that can be exciting and enjoyable for every kind of player.
+            We also listen to ideas, requests, and wishes from our community, so we can make our games
+            as fun and polished as possible.
+          </p>
+        </section>
+      </div>
     </main>
   </div>
 
