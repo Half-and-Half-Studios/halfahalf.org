@@ -100,14 +100,8 @@
       margin-bottom: 16px;
     }
 
-    .homepage-layout {
-      display: grid;
-      grid-template-columns: minmax(320px, 800px) minmax(330px, 520px);
-      gap: 28px;
-      align-items: start;
-    }
-
     .news-card {
+      width: min(100%, 735px);
       background: #111111;
       border-radius: 9px;
       padding: 9px 12px 13px;
@@ -133,31 +127,6 @@
       max-width: 710px;
     }
 
-    .events-area {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-top: -68px;
-    }
-
-    .events-title {
-      font-size: clamp(38px, 4vw, 58px);
-      font-weight: 900;
-      color: #f2f2f2;
-      letter-spacing: 2px;
-      line-height: 1;
-      margin-bottom: 18px;
-      text-align: center;
-      white-space: nowrap;
-    }
-
-    .events-box {
-      width: min(100%, 455px);
-      height: 575px;
-      background: #111111;
-      border-radius: 12px;
-    }
-
     .copyright {
       position: fixed;
       left: 191px;
@@ -173,26 +142,6 @@
       letter-spacing: 0.2px;
       z-index: 5;
       background: transparent;
-    }
-
-    @media (max-width: 1200px) {
-      .homepage-layout {
-        grid-template-columns: 1fr;
-      }
-
-      .events-area {
-        margin-top: 20px;
-        align-items: flex-start;
-      }
-
-      .events-title {
-        text-align: left;
-      }
-
-      .events-box {
-        width: min(100%, 520px);
-        height: 420px;
-      }
     }
 
     @media (max-width: 800px) {
@@ -236,6 +185,10 @@
         padding: 18px 18px 55px;
       }
 
+      .news-card {
+        width: 100%;
+      }
+
       .copyright {
         left: 0;
         font-size: 13px;
@@ -276,15 +229,6 @@
         font-size: 15px;
       }
 
-      .events-title {
-        font-size: 34px;
-        white-space: normal;
-      }
-
-      .events-box {
-        height: 360px;
-      }
-
       .copyright {
         font-size: 11px;
       }
@@ -308,23 +252,16 @@
     <main class="content">
       <h1 class="title">HOMEPAGE - NEWS</h1>
 
-      <div class="homepage-layout">
-        <article class="news-card">
-          <h2>
-            Website created:<span class="news-date">05/25/2026 by AxoTheDev</span>
-          </h2>
+      <article class="news-card">
+        <h2>
+          Website created:<span class="news-date">05/25/2026 by AxoTheDev</span>
+        </h2>
 
-          <p>
-            Created the official Half &amp; Half Studios website and added all the tabs like About us,
-            Our Team, Games and Links. Also registered copyright for Half &amp; Half Studios.
-          </p>
-        </article>
-
-        <section class="events-area">
-          <h2 class="events-title">UPCOMING EVENTS</h2>
-          <div class="events-box"></div>
-        </section>
-      </div>
+        <p>
+          Created the official Half &amp; Half Studios website and added all the tabs like About us,
+          Our Team, Games and Links. Also registered copyright for Half &amp; Half Studios.
+        </p>
+      </article>
     </main>
   </div>
 
