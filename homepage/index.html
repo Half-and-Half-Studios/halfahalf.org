@@ -49,8 +49,8 @@
     }
 
     .sidebar-logo {
-  width: 180px;
-  margin-bottom: 18px;
+      width: 180px;
+      margin-bottom: 18px;
     }
 
     .nav {
@@ -62,34 +62,33 @@
     }
 
     .nav a {
-  width: 162px;
-  height: 41px;
-  border: 3px solid #1cade7;
-  border-radius: 8px;
-  color: #1cade7;
-  background: transparent;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 25px;
-  font-weight: 900;
-  letter-spacing: 1px;
-  line-height: 1;
-  transition: 0.2s ease;
-}
+      width: 162px;
+      height: 41px;
+      border: 3px solid #1cade7;
+      border-radius: 8px;
+      color: #1cade7;
+      background: transparent;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 25px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      line-height: 1;
+      transition: 0.2s ease;
+    }
 
-.nav a:hover {
-  background: #1cade7;
-  color: #141414;
-}
+    .nav a:hover {
+      background: #1cade7;
+      color: #141414;
+    }
 
     .content {
-      position: relative;
       flex: 1;
       min-height: 100vh;
-      padding: 8px 20px 40px;
-      overflow: hidden;
+      padding: 8px 28px 50px;
+      overflow-x: hidden;
     }
 
     .title {
@@ -98,26 +97,34 @@
       color: #f2f2f2;
       letter-spacing: 1px;
       line-height: 1;
-      margin-left: 0;
+      margin-bottom: 16px;
     }
 
-    .development {
-      position: absolute;
-      top: 82px;
-      left: 40px;
-      right: 20px;
-      color: #4D4D4D;
-      font-size: clamp(46px, 6vw, 72px);
+    .news-card {
+      width: min(100%, 735px);
+      background: #111111;
+      border-radius: 9px;
+      padding: 9px 12px 13px;
+      color: #f2f2f2;
+    }
+
+    .news-card h2 {
+      font-size: clamp(24px, 3vw, 30px);
       font-weight: 900;
       line-height: 1;
-      letter-spacing: 1px;
-      user-select: none;
-      z-index: 1;
+      margin-bottom: 2px;
     }
 
-    .development div {
-      margin-bottom: 8px;
-      white-space: nowrap;
+    .news-date {
+      color: #2c2c2c;
+      font-weight: 900;
+    }
+
+    .news-card p {
+      font-size: clamp(15px, 1.6vw, 17px);
+      font-weight: 400;
+      line-height: 1.25;
+      max-width: 710px;
     }
 
     .copyright {
@@ -175,19 +182,18 @@
 
       .content {
         min-height: calc(100vh - 76px);
-        padding: 18px 18px 50px;
+        padding: 18px 18px 55px;
       }
 
-      .development {
-        top: 88px;
-        left: 18px;
-        font-size: clamp(35px, 9vw, 56px);
+      .news-card {
+        width: 100%;
       }
 
       .copyright {
         left: 0;
         font-size: 13px;
         padding: 0 10px;
+        background: #3c3c3c;
       }
     }
 
@@ -210,13 +216,17 @@
         font-size: 40px;
       }
 
-      .development {
-        top: 80px;
-        font-size: 34px;
+      .news-card {
+        padding: 10px 12px 12px;
       }
 
-      .development div {
-        margin-bottom: 6px;
+      .news-card h2 {
+        font-size: 24px;
+        line-height: 1.05;
+      }
+
+      .news-card p {
+        font-size: 15px;
       }
 
       .copyright {
@@ -242,15 +252,16 @@
     <main class="content">
       <h1 class="title">HOMEPAGE - NEWS</h1>
 
-      <div class="development" aria-hidden="true">
-        <div>THIS PAGE WILL BE</div>
-        <div>FOR NEWS ABOUT THE STUDIO</div>
-        <div>BUT NO NEW NEWS ARE AVAIBLE</div>
-        <div>BECAUSE THIS PAGE IS</div>
-        <div>STILL IN DEVELOPMENT</div>
-        <div>THANK YOU FOR UNDERSTANDING</div>
-        <div>NEWS COMING SOON!</div>
-      </div>
+      <article class="news-card">
+        <h2>
+          Website created:<span class="news-date">05/25/2026 by AxoTheDev</span>
+        </h2>
+
+        <p>
+          Created the official Half &amp; Half Studios website and added all the tabs like About us,
+          Our Team, Games and Links. Also registered copyright for Half &amp; Half Studios.
+        </p>
+      </article>
     </main>
   </div>
 
