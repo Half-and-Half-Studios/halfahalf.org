@@ -7,21 +7,249 @@
   <title>Homepage - Half & Half Studios</title>
   <link rel="icon" type="image/png" href="../hahslogo.png">
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;800;900&display=swap" rel="stylesheet">
+
   <style>
-    body {
+    * {
       margin: 0;
-      background: #ffffff;
-      color: #000000;
-      font-family: Arial, Helvetica, sans-serif;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+    }
+
+    body {
+      background: #3c3c3c;
+      color: #f2f2f2;
+      font-family: "Inter", Arial, Helvetica, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      background: #3c3c3c;
+    }
+
+    .sidebar {
+      width: 191px;
+      min-height: 100vh;
+      background: #141414;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 8px;
+      flex-shrink: 0;
+    }
+
+    .sidebar-logo {
+      width: 165px;
+      margin-bottom: 14px;
+    }
+
+    .nav {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav a {
+      width: 162px;
+      height: 41px;
+      border: 3px solid #1cade7;
+      border-radius: 8px;
+      color: #1cade7;
+      background: transparent;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 25px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      line-height: 1;
+    }
+
+    .content {
+      position: relative;
+      flex: 1;
+      min-height: 100vh;
+      padding: 8px 20px 40px;
+      overflow: hidden;
+    }
+
+    .title {
+      font-size: clamp(42px, 5vw, 64px);
+      font-weight: 900;
+      color: #f2f2f2;
+      letter-spacing: 1px;
+      line-height: 1;
+      margin-left: 0;
+    }
+
+    .development {
+      position: absolute;
+      top: 82px;
+      left: 40px;
+      right: 20px;
+      color: #414141;
+      font-size: clamp(46px, 6vw, 72px);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: 1px;
+      user-select: none;
+      z-index: 1;
+    }
+
+    .development div {
+      margin-bottom: 8px;
+      white-space: nowrap;
+    }
+
+    .copyright {
+      position: fixed;
+      left: 191px;
+      right: 0;
+      bottom: 0;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #f2f2f2;
+      font-size: 15px;
+      font-weight: 400;
+      letter-spacing: 0.2px;
+      z-index: 5;
+      background: transparent;
+    }
+
+    @media (max-width: 800px) {
+      .page {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        min-height: auto;
+        padding: 10px 12px;
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 12px;
+        overflow-x: auto;
+      }
+
+      .sidebar-logo {
+        width: 120px;
+        margin-bottom: 0;
+        flex-shrink: 0;
+      }
+
+      .nav {
+        width: auto;
+        flex-direction: row;
+        gap: 8px;
+      }
+
+      .nav a {
+        width: auto;
+        min-width: 120px;
+        height: 36px;
+        padding: 0 14px;
+        font-size: 18px;
+        border-width: 2px;
+      }
+
+      .content {
+        min-height: calc(100vh - 76px);
+        padding: 18px 18px 50px;
+      }
+
+      .development {
+        top: 88px;
+        left: 18px;
+        font-size: clamp(35px, 9vw, 56px);
+      }
+
+      .copyright {
+        left: 0;
+        font-size: 13px;
+        padding: 0 10px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .sidebar {
+        align-items: flex-start;
+      }
+
+      .sidebar-logo {
+        width: 100px;
+      }
+
+      .nav a {
+        min-width: 98px;
+        height: 32px;
+        font-size: 15px;
+      }
+
+      .title {
+        font-size: 40px;
+      }
+
+      .development {
+        top: 80px;
+        font-size: 34px;
+      }
+
+      .development div {
+        margin-bottom: 6px;
+      }
+
+      .copyright {
+        font-size: 11px;
+      }
     }
   </style>
 </head>
 
-<footer style="position: fixed; bottom: 0; left: 0; width: 100%; text-align: center; padding: 1rem 0;">
-  <p>&copy; 2026 Half &amp; Half Studios. All rights reserved.</p>
-</footer>
-  
 <body>
-  <h1> Hello World</h1>
+  <div class="page">
+    <aside class="sidebar">
+      <img src="../hahsbanner.png" alt="Half & Half Studios logo" class="sidebar-logo">
+
+      <nav class="nav">
+        <a href="#">ABOUT US</a>
+        <a href="#">OUR TEAM</a>
+        <a href="#">GAMES</a>
+        <a href="#">LINKS</a>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <h1 class="title">HOMEPAGE</h1>
+
+      <div class="development" aria-hidden="true">
+        <div>STILL IN DEVELOPMENT</div>
+        <div>STILL IN DEVELOPMENT</div>
+        <div>STILL IN DEVELOPMENT</div>
+        <div>STILL IN DEVELOPMENT</div>
+        <div>STILL IN DEVELOPMENT</div>
+        <div>STILL IN DEVELOPMENT</div>
+        <div>STILL IN DEVELOPMENT</div>
+      </div>
+    </main>
+  </div>
+
+  <footer class="copyright">
+    © 2026 Half &amp; Half Studios. All rights reserved.
+  </footer>
 </body>
 </html>
