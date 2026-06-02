@@ -79,8 +79,8 @@
     .content {
       flex: 1;
       min-height: 100vh;
-      padding: 8px 20px 40px;
-      overflow: hidden;
+      padding: 8px 28px 65px;
+      overflow-x: hidden;
     }
 
     .title {
@@ -89,6 +89,128 @@
       color: #f2f2f2;
       letter-spacing: 1px;
       line-height: 1;
+      margin-bottom: 30px;
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 290px));
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    .team-card {
+      position: relative;
+      min-height: 390px;
+      background: #111111;
+      color: #f2f2f2;
+      padding: 26px 22px 24px;
+      clip-path: polygon(
+        0 9%,
+        15% 0,
+        100% 0,
+        100% 91%,
+        85% 100%,
+        0 100%
+      );
+      transition: 0.2s ease;
+      overflow: hidden;
+    }
+
+    .team-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .team-card::before {
+      content: "";
+      position: absolute;
+      inset: 3px;
+      background: #181818;
+      clip-path: polygon(
+        0 9%,
+        15% 0,
+        100% 0,
+        100% 91%,
+        85% 100%,
+        0 100%
+      );
+      z-index: 0;
+    }
+
+    .team-card::after {
+      content: "";
+      position: absolute;
+      left: 22px;
+      right: 22px;
+      bottom: 22px;
+      height: 3px;
+      background: #1cade7;
+      z-index: 1;
+    }
+
+    .team-inner {
+      position: relative;
+      z-index: 2;
+      min-height: 340px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .icon-box {
+      width: 150px;
+      height: 150px;
+      background: #3c3c3c;
+      margin: 10px auto 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      clip-path: polygon(
+        0 11%,
+        15% 0,
+        100% 0,
+        100% 89%,
+        85% 100%,
+        0 100%
+      );
+    }
+
+    .icon-box img {
+      width: 115px;
+      height: 115px;
+      object-fit: contain;
+    }
+
+    .username {
+      font-size: 30px;
+      font-weight: 900;
+      color: #f2f2f2;
+      line-height: 1;
+      margin-bottom: 10px;
+      letter-spacing: 0.5px;
+    }
+
+    .role {
+      font-size: 20px;
+      font-weight: 400;
+      color: #d9d9d9;
+      line-height: 1.25;
+      max-width: 220px;
+    }
+
+    .owner {
+      box-shadow: 0 0 0 3px #35d62b;
+    }
+
+    .co-owner {
+      box-shadow: 0 0 0 3px #e92b55;
+    }
+
+    .developer {
+      box-shadow: 0 0 0 3px #39ff00;
+    }
+
+    .admin {
+      box-shadow: 0 0 0 3px #1cade7;
     }
 
     .copyright {
@@ -105,7 +227,7 @@
       font-weight: 400;
       letter-spacing: 0.2px;
       z-index: 5;
-      background: transparent;
+      background: #3c3c3c;
     }
 
     @media (max-width: 800px) {
@@ -140,7 +262,12 @@
 
       .content {
         min-height: calc(100vh - 76px);
-        padding: 18px 18px 50px;
+        padding: 18px 18px 65px;
+      }
+
+      .team-grid {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 22px;
       }
 
       .copyright {
@@ -165,6 +292,34 @@
         font-size: 40px;
       }
 
+      .team-card {
+        min-height: 350px;
+        padding: 22px 18px;
+      }
+
+      .team-inner {
+        min-height: 300px;
+      }
+
+      .icon-box {
+        width: 130px;
+        height: 130px;
+        margin-bottom: 22px;
+      }
+
+      .icon-box img {
+        width: 100px;
+        height: 100px;
+      }
+
+      .username {
+        font-size: 26px;
+      }
+
+      .role {
+        font-size: 18px;
+      }
+
       .copyright {
         font-size: 11px;
       }
@@ -182,6 +337,63 @@
 
     <main class="content">
       <h1 class="title">OUR TEAM</h1>
+
+      <section class="team-grid">
+        <article class="team-card owner">
+          <div class="team-inner">
+            <div class="icon-box">
+              <img src="../discotools-xyz-icon%20(3).png" alt="Owner icon">
+            </div>
+
+            <h2 class="username">Seh</h2>
+            <p class="role">Owner, Scripter, Founder</p>
+          </div>
+        </article>
+
+        <article class="team-card co-owner">
+          <div class="team-inner">
+            <div class="icon-box">
+              <img src="../discotools-xyz-icon%20(4).png" alt="Co-owner icon">
+            </div>
+
+            <h2 class="username">AxoTheDev</h2>
+            <p class="role">Co-Owner, Designer</p>
+          </div>
+        </article>
+
+        <article class="team-card developer">
+          <div class="team-inner">
+            <div class="icon-box">
+              <img src="../discotools-xyz-icon%20(5).png" alt="Developer icon">
+            </div>
+
+            <h2 class="username">someone</h2>
+            <p class="role">Modeler, Developer</p>
+          </div>
+        </article>
+
+        <article class="team-card admin">
+          <div class="team-inner">
+            <div class="icon-box">
+              <img src="../discotools-xyz-icon%20(6).png" alt="Admin icon">
+            </div>
+
+            <h2 class="username">Marko</h2>
+            <p class="role">Head Admin</p>
+          </div>
+        </article>
+
+        <article class="team-card admin">
+          <div class="team-inner">
+            <div class="icon-box">
+              <img src="../discotools-xyz-icon%20(6).png" alt="Moderator icon">
+            </div>
+
+            <h2 class="username">Vanica</h2>
+            <p class="role">Senior Moderator</p>
+          </div>
+        </article>
+      </section>
     </main>
   </div>
 
