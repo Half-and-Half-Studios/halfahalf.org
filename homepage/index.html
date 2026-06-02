@@ -100,8 +100,15 @@
       margin-bottom: 16px;
     }
 
-    .news-card {
+    .news-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
       width: min(100%, 735px);
+    }
+
+    .news-card {
+      width: 100%;
       background: #111111;
       border-radius: 9px;
       padding: 9px 12px 13px;
@@ -185,7 +192,7 @@
         padding: 18px 18px 55px;
       }
 
-      .news-card {
+      .news-list {
         width: 100%;
       }
 
@@ -253,16 +260,29 @@
     <main class="content">
       <h1 class="title">HOMEPAGE - NEWS</h1>
 
-      <article class="news-card">
-        <h2>
-          Website created:<span class="news-date">05/25/2026 by AxoTheDev</span>
-        </h2>
+      <section class="news-list">
+        <article class="news-card">
+          <h2>
+            Website created:<span class="news-date">05/25/2026 by AxoTheDev</span>
+          </h2>
 
-        <p>
-          Created the official Half &amp; Half Studios website and added all the tabs like About us,
-          Our Team, Games and Links. Also registered copyright for Half &amp; Half Studios.
-        </p>
-      </article>
+          <p>
+            Created the official Half &amp; Half Studios website and added all the tabs like About us,
+            Our Team, Games and Links. Also registered copyright for Half &amp; Half Studios.
+          </p>
+        </article>
+
+        <article class="news-card">
+          <h2>
+            Added something:<span class="news-date">06/02/2026 by AxoTheDev</span>
+          </h2>
+
+          <p>
+            Added the Links, forms, our team &amp; games tab. Updated About us, forms, games, links
+            &amp; our team tab.
+          </p>
+        </article>
+      </section>
     </main>
   </div>
 
