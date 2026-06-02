@@ -89,7 +89,20 @@
       color: #f2f2f2;
       letter-spacing: 1px;
       line-height: 1;
-      margin-bottom: 30px;
+      margin-bottom: 32px;
+    }
+
+    .team-section {
+      margin-bottom: 42px;
+    }
+
+    .section-title {
+      font-size: clamp(28px, 3.5vw, 42px);
+      font-weight: 900;
+      color: #1cade7;
+      letter-spacing: 1px;
+      line-height: 1;
+      margin-bottom: 18px;
     }
 
     .team-grid {
@@ -282,6 +295,10 @@
         font-size: 40px;
       }
 
+      .section-title {
+        font-size: 28px;
+      }
+
       .team-card {
         min-height: 200px;
         padding: 26px 22px;
@@ -318,56 +335,72 @@
     <main class="content">
       <h1 class="title">OUR TEAM</h1>
 
-      <section class="team-grid">
-        <article class="team-card owner">
-          <div class="team-inner">
-            <div class="name-row">
-              <h2 class="username">Seh</h2>
-              <img src="../discotools-xyz-icon%20(3).png" alt="Owner icon" class="role-icon">
-            </div>
-            <p class="role">Owner, Scripter, Founder</p>
-          </div>
-        </article>
+      <section class="team-section">
+        <h2 class="section-title">LEADERSHIP</h2>
 
-        <article class="team-card co-owner">
-          <div class="team-inner">
-            <div class="name-row">
-              <h2 class="username">AxoTheDev</h2>
-              <img src="../discotools-xyz-icon%20(4).png" alt="Co-owner icon" class="role-icon">
+        <div class="team-grid">
+          <article class="team-card owner">
+            <div class="team-inner">
+              <div class="name-row">
+                <h3 class="username">Seh</h3>
+                <img src="../discotools-xyz-icon%20(3).png" alt="Owner icon" class="role-icon">
+              </div>
+              <p class="role">Owner, Scripter, Founder</p>
             </div>
-            <p class="role">Co-Owner, Designer</p>
-          </div>
-        </article>
+          </article>
 
-        <article class="team-card developer">
-          <div class="team-inner">
-            <div class="name-row">
-              <h2 class="username">someone</h2>
-              <img src="../discotools-xyz-icon%20(5).png" alt="Developer icon" class="role-icon">
+          <article class="team-card co-owner">
+            <div class="team-inner">
+              <div class="name-row">
+                <h3 class="username">AxoTheDev</h3>
+                <img src="../discotools-xyz-icon%20(4).png" alt="Co-owner icon" class="role-icon">
+              </div>
+              <p class="role">Co-Owner, Designer</p>
             </div>
-            <p class="role">Modeler, Developer</p>
-          </div>
-        </article>
+          </article>
+        </div>
+      </section>
 
-        <article class="team-card admin">
-          <div class="team-inner">
-            <div class="name-row">
-              <h2 class="username">Marko</h2>
-              <img src="../discotools-xyz-icon%20(6).png" alt="Admin icon" class="role-icon">
-            </div>
-            <p class="role">Head Admin</p>
-          </div>
-        </article>
+      <section class="team-section">
+        <h2 class="section-title">DEVELOPMENT TEAM</h2>
 
-        <article class="team-card admin">
-          <div class="team-inner">
-            <div class="name-row">
-              <h2 class="username">Vanica</h2>
-              <img src="../discotools-xyz-icon%20(6).png" alt="Moderator icon" class="role-icon">
+        <div class="team-grid">
+          <article class="team-card developer">
+            <div class="team-inner">
+              <div class="name-row">
+                <h3 class="username">someone</h3>
+                <img src="../discotools-xyz-icon%20(5).png" alt="Developer icon" class="role-icon">
+              </div>
+              <p class="role">Modeler, Developer</p>
             </div>
-            <p class="role">Senior Moderator</p>
-          </div>
-        </article>
+          </article>
+        </div>
+      </section>
+
+      <section class="team-section">
+        <h2 class="section-title">COMMUNITY TEAM</h2>
+
+        <div class="team-grid">
+          <article class="team-card admin">
+            <div class="team-inner">
+              <div class="name-row">
+                <h3 class="username">Marko</h3>
+                <img src="../discotools-xyz-icon%20(6).png" alt="Head Admin icon" class="role-icon">
+              </div>
+              <p class="role">Head Admin</p>
+            </div>
+          </article>
+
+          <article class="team-card admin">
+            <div class="team-inner">
+              <div class="name-row">
+                <h3 class="username">Vanica</h3>
+                <img src="../discotools-xyz-icon%20(6).png" alt="Senior Moderator icon" class="role-icon">
+              </div>
+              <p class="role">Senior Moderator</p>
+            </div>
+          </article>
+        </div>
       </section>
     </main>
   </div>
