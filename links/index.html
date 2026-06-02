@@ -79,8 +79,8 @@
     .content {
       flex: 1;
       min-height: 100vh;
-      padding: 8px 20px 40px;
-      overflow: hidden;
+      padding: 8px 28px 60px;
+      overflow-x: hidden;
     }
 
     .title {
@@ -89,6 +89,60 @@
       color: #f2f2f2;
       letter-spacing: 1px;
       line-height: 1;
+      margin-bottom: 30px;
+    }
+
+    .links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 220px));
+      gap: 26px;
+      align-items: start;
+    }
+
+    .link-card {
+      background: #111111;
+      border-radius: 14px;
+      padding: 18px;
+      min-height: 230px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      text-align: center;
+      text-decoration: none;
+      color: #f2f2f2;
+      transition: 0.2s ease;
+    }
+
+    .link-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 0 0 3px #1cade7;
+    }
+
+    .link-card img {
+      width: 125px;
+      height: 125px;
+      object-fit: contain;
+      margin-bottom: 15px;
+    }
+
+    .link-card h2 {
+      font-size: 23px;
+      font-weight: 900;
+      color: #f2f2f2;
+      letter-spacing: 1px;
+      line-height: 1.1;
+    }
+
+    .link-card p {
+      font-size: 14px;
+      font-weight: 400;
+      color: #bdbdbd;
+      margin-top: 6px;
+    }
+
+    .hidden-link {
+      display: none;
     }
 
     .copyright {
@@ -105,7 +159,7 @@
       font-weight: 400;
       letter-spacing: 0.2px;
       z-index: 5;
-      background: transparent;
+      background: #3c3c3c;
     }
 
     @media (max-width: 800px) {
@@ -140,7 +194,12 @@
 
       .content {
         min-height: calc(100vh - 76px);
-        padding: 18px 18px 50px;
+        padding: 18px 18px 60px;
+      }
+
+      .links-grid {
+        grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+        gap: 18px;
       }
 
       .copyright {
@@ -165,6 +224,20 @@
         font-size: 40px;
       }
 
+      .link-card {
+        min-height: 200px;
+        padding: 14px;
+      }
+
+      .link-card img {
+        width: 105px;
+        height: 105px;
+      }
+
+      .link-card h2 {
+        font-size: 19px;
+      }
+
       .copyright {
         font-size: 11px;
       }
@@ -182,6 +255,64 @@
 
     <main class="content">
       <h1 class="title">LINKS</h1>
+
+      <section class="links-grid">
+        <a class="link-card" href="https://www.tiktok.com/@halfahalfstudiosrbx?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer">
+          <img src="../discotools-xyz-icon.png" alt="Half & Half Studios TikTok">
+          <div>
+            <h2>TIKTOK</h2>
+            <p>Half &amp; Half Studios</p>
+          </div>
+        </a>
+
+        <a class="link-card" href="https://www.youtube.com/@halfahalfstudios" target="_blank" rel="noopener noreferrer">
+          <img src="../discotools-xyz-icon%20(1).png" alt="Half & Half Studios YouTube">
+          <div>
+            <h2>YOUTUBE</h2>
+            <p>Half &amp; Half Studios</p>
+          </div>
+        </a>
+
+        <a class="link-card" href="https://github.com/Half-and-Half-Studios" target="_blank" rel="noopener noreferrer">
+          <img src="../discotools-xyz-icon%20(2).png" alt="Half & Half Studios GitHub">
+          <div>
+            <h2>GITHUB</h2>
+            <p>Official GitHub</p>
+          </div>
+        </a>
+
+        <a class="link-card" href="https://www.tiktok.com/@sehethedev?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer">
+          <img src="../discotools-xyz-icon%20(3).png" alt="Seh TikTok">
+          <div>
+            <h2>SEH</h2>
+            <p>TikTok</p>
+          </div>
+        </a>
+
+        <a class="link-card" href="https://www.tiktok.com/@axo_the_dev?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer">
+          <img src="../discotools-xyz-icon%20(4).png" alt="AxoTheDev TikTok">
+          <div>
+            <h2>AXOTHEDEV</h2>
+            <p>TikTok</p>
+          </div>
+        </a>
+
+        <a class="link-card hidden-link" href="#">
+          <img src="../discotools-xyz-icon%20(5).png" alt="Green tools">
+          <div>
+            <h2>TOOLS</h2>
+            <p>Coming soon</p>
+          </div>
+        </a>
+
+        <a class="link-card hidden-link" href="#">
+          <img src="../discotools-xyz-icon%20(6).png" alt="Blue hammer">
+          <div>
+            <h2>TOOLS</h2>
+            <p>Coming soon</p>
+          </div>
+        </a>
+      </section>
     </main>
   </div>
 
