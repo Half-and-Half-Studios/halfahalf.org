@@ -31,14 +31,15 @@
       position: relative;
       width: 100vw;
       height: 100vh;
-      background: #141414;
+      min-height: 100svh;
+      background: #d9d9d9;
       overflow: hidden;
     }
 
     .green-shape {
       position: absolute;
       inset: 0;
-      background: #3C3C3C;
+      background: #1ca720;
       clip-path: polygon(0 0, 100% 0, 0 100%);
       z-index: 1;
     }
@@ -49,6 +50,8 @@
       left: clamp(16px, 5vw, 60px);
       width: clamp(280px, 48vw, 650px);
       z-index: 3;
+      user-select: none;
+      pointer-events: none;
     }
 
     .moon {
@@ -58,21 +61,24 @@
       width: clamp(210px, 32vw, 430px);
       z-index: 2;
       filter: grayscale(100%);
+      user-select: none;
+      pointer-events: none;
     }
 
     .continue-button {
       position: absolute;
       left: 50%;
-      bottom: clamp(45px, 12vh, 110px);
+      bottom: clamp(42px, 12vh, 110px);
       transform: translateX(-50%);
       z-index: 4;
 
       padding: clamp(6px, 1.2vw, 9px) clamp(14px, 2.5vw, 22px);
-      border: 2px solid #3C3C3C;
+      border: 2px solid #1ca720;
       border-radius: 10px;
-      background: #141414;
-      color: #3C3C3C;
+      background: #b9e8b8;
+      color: #1ca720;
 
+      font-family: Arial, Helvetica, sans-serif;
       font-size: clamp(16px, 2.1vw, 26px);
       font-weight: 900;
       text-decoration: none;
@@ -85,8 +91,8 @@
     }
 
     .continue-button:hover {
-      background: #3C3C3C;
-      color: #141414;
+      background: #1ca720;
+      color: #b9e8b8;
     }
 
     @keyframes fadeInButton {
@@ -153,6 +159,16 @@
 
       .continue-button {
         bottom: 28px;
+      }
+    }
+
+    @media (min-width: 1200px) {
+      .logo-small {
+        width: 650px;
+      }
+
+      .moon {
+        width: 430px;
       }
     }
   </style>
