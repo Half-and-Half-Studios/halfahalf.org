@@ -9,49 +9,86 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
   <style>
+    :root {
+      --bg: #34343a;
+      --bg-deep: #121214;
+      --panel: #131315;
+      --panel-line: rgba(242, 242, 242, 0.07);
+      --text: #f2f2f2;
+      --text-dim: #98989e;
+      --accent: #1cade7;
+      --accent-dim: rgba(28, 173, 231, 0.22);
+      --accent-warm: #e78a1c;
+      --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+      --display: "Inter", Arial, Helvetica, sans-serif;
+    }
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
-    html,
-    body {
+    html, body {
       width: 100%;
       min-height: 100%;
     }
 
     body {
-      background: #3c3c3c;
-      color: #f2f2f2;
-      font-family: "Inter", Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(1200px 600px at 85% -10%, rgba(28, 173, 231, 0.08), transparent 60%),
+        var(--bg);
+      color: var(--text);
+      font-family: var(--display);
       overflow-x: hidden;
+    }
+
+    a { color: inherit; }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 4px;
     }
 
     .page {
       min-height: 100vh;
       display: flex;
-      background: #3c3c3c;
+      background: transparent;
     }
+
+    /* ---------- Sidebar ---------- */
 
     .sidebar {
       width: 191px;
       min-height: 100vh;
-      background: #141414;
+      background: var(--bg-deep);
       display: flex;
       flex-direction: column;
       align-items: center;
       padding-top: 8px;
       padding-bottom: 34px;
       flex-shrink: 0;
+      border-right: 1px solid var(--panel-line);
+      position: relative;
+    }
+
+    .sidebar::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: -1px;
+      width: 1px;
+      height: 100%;
+      background: linear-gradient(180deg, transparent, var(--accent-dim), transparent);
     }
 
     .sidebar-logo {
       width: 180px;
-      margin-bottom: 18px;
+      margin-bottom: 22px;
     }
 
     .nav {
@@ -66,96 +103,251 @@
     .login-button {
       width: 162px;
       height: 41px;
-      border: 3px solid #1cade7;
+      border: 3px solid var(--accent);
       border-radius: 8px;
-      color: #1cade7;
+      color: var(--accent);
       background: transparent;
       text-decoration: none;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 25px;
+      gap: 8px;
+      font-size: 20px;
       font-weight: 900;
       letter-spacing: 1px;
       line-height: 1;
-      transition: 0.2s ease;
+      transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+      position: relative;
+    }
+
+    .nav a::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0.35;
+      transition: opacity 0.15s ease, box-shadow 0.15s ease;
+      flex-shrink: 0;
     }
 
     .nav a:hover,
+    .nav a:focus-visible,
     .login-button:hover {
-      background: #1cade7;
-      color: #141414;
+      background: var(--accent);
+      color: var(--bg-deep);
+      box-shadow: 0 0 22px var(--accent-dim);
+    }
+
+    .nav a:hover::before,
+    .nav a:focus-visible::before {
+      opacity: 1;
+      background: var(--bg-deep);
+    }
+
+    .nav a[aria-current="page"] {
+      background: var(--accent-dim);
+      box-shadow: inset 0 0 0 1px var(--accent);
+    }
+
+    .nav a[aria-current="page"]::before {
+      opacity: 1;
+      box-shadow: 0 0 8px var(--accent);
     }
 
     .login-holder {
       margin-top: auto;
     }
 
+    /* ---------- Content ---------- */
+
     .content {
       flex: 1;
       min-height: 100vh;
-      padding: 8px 28px 50px;
+      padding: 56px 40px 60px 48px;
       overflow-x: hidden;
+      max-width: 900px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      font-family: var(--mono);
+      font-size: 12.5px;
+      font-weight: 500;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
+
+    .eyebrow .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px 1px var(--accent);
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
     }
 
     .title {
-      font-size: clamp(42px, 5vw, 64px);
+      font-size: clamp(38px, 4.6vw, 56px);
       font-weight: 900;
-      color: #f2f2f2;
-      letter-spacing: 1px;
-      line-height: 1;
-      margin-bottom: 16px;
+      color: var(--text);
+      letter-spacing: 0.5px;
+      line-height: 1.02;
+      margin-bottom: 12px;
     }
 
+    .lede {
+      font-size: 16px;
+      color: var(--text-dim);
+      max-width: 520px;
+      line-height: 1.5;
+      margin-bottom: 46px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid var(--panel-line);
+    }
+
+    /* ---------- Timeline / news list ---------- */
+
     .news-list {
+      list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 14px;
-      width: min(100%, 735px);
+      width: 100%;
+      position: relative;
+    }
+
+    .news-item {
+      position: relative;
+      display: grid;
+      grid-template-columns: 22px 1fr;
+      column-gap: 22px;
+      padding-bottom: 30px;
+      opacity: 0;
+      animation: rise 0.5s ease forwards;
+    }
+
+    .news-item:nth-child(1) { animation-delay: 0.02s; }
+    .news-item:nth-child(2) { animation-delay: 0.10s; }
+    .news-item:nth-child(3) { animation-delay: 0.18s; }
+    .news-item:nth-child(4) { animation-delay: 0.26s; }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .rail {
+      position: relative;
+      display: flex;
+      justify-content: center;
+    }
+
+    .rail::before {
+      content: "";
+      position: absolute;
+      top: 20px;
+      bottom: -30px;
+      width: 1px;
+      background: var(--panel-line);
+    }
+
+    .news-item:last-child .rail::before {
+      display: none;
+    }
+
+    .node {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: var(--bg-deep);
+      border: 2px solid var(--accent);
+      margin-top: 8px;
+      box-shadow: 0 0 0 4px rgba(28, 173, 231, 0.08);
+      flex-shrink: 0;
+      z-index: 1;
+    }
+
+    .news-item:first-child .node {
+      background: var(--accent);
+      box-shadow: 0 0 12px 1px var(--accent), 0 0 0 4px rgba(28, 173, 231, 0.12);
     }
 
     .news-card {
-      width: 100%;
-      background: #111111;
-      border-radius: 9px;
-      padding: 9px 12px 13px;
-      color: #f2f2f2;
+      background: var(--panel);
+      border: 1px solid var(--panel-line);
+      border-radius: 10px;
+      padding: 18px 22px 20px;
+      color: var(--text);
+      transition: border-color 0.15s ease, transform 0.15s ease;
+    }
+
+    .news-card:hover {
+      border-color: rgba(28, 173, 231, 0.35);
+    }
+
+    .news-card-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
     }
 
     .news-card h2 {
-      font-size: clamp(24px, 3vw, 30px);
-      font-weight: 900;
-      line-height: 1;
-      margin-bottom: 2px;
+      font-size: clamp(19px, 2vw, 22px);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: 0.2px;
     }
 
     .news-date {
-      color: #2c2c2c;
-      font-weight: 900;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      color: var(--text-dim);
+      white-space: nowrap;
+    }
+
+    .news-date .author {
+      color: var(--accent-warm);
     }
 
     .news-card p {
-      font-size: clamp(15px, 1.6vw, 17px);
+      font-size: 15px;
       font-weight: 400;
-      line-height: 1.25;
-      max-width: 710px;
+      line-height: 1.55;
+      color: #cfcfcf;
+      max-width: 620px;
     }
+
+    /* ---------- Footer ---------- */
 
     .copyright {
       position: fixed;
       left: 191px;
       right: 0;
       bottom: 0;
-      height: 26px;
+      height: 30px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #f2f2f2;
-      font-size: 15px;
-      font-weight: 400;
-      letter-spacing: 0.2px;
+      color: var(--text-dim);
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.3px;
       z-index: 5;
-      background: transparent;
+      background: linear-gradient(0deg, rgba(20,20,20,0.9), transparent);
     }
 
     @media (max-width: 800px) {
@@ -171,10 +363,14 @@
         justify-content: flex-start;
         gap: 12px;
         overflow-x: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--panel-line);
       }
 
+      .sidebar::after { display: none; }
+
       .sidebar-logo {
-        width: 120px;
+        width: 110px;
         margin-bottom: 0;
         flex-shrink: 0;
       }
@@ -188,10 +384,10 @@
       .nav a,
       .login-button {
         width: auto;
-        min-width: 120px;
+        min-width: 108px;
         height: 36px;
         padding: 0 14px;
-        font-size: 18px;
+        font-size: 15px;
         border-width: 2px;
       }
 
@@ -202,57 +398,28 @@
 
       .content {
         min-height: calc(100vh - 76px);
-        padding: 18px 18px 55px;
-      }
-
-      .news-list {
-        width: 100%;
+        padding: 26px 20px 60px;
+        max-width: 100%;
       }
 
       .copyright {
         left: 0;
-        font-size: 13px;
+        font-size: 11px;
         padding: 0 10px;
-        background: #3c3c3c;
       }
     }
 
     @media (max-width: 480px) {
-      .sidebar {
-        align-items: flex-start;
-      }
+      .title { font-size: 34px; }
+      .news-item { grid-template-columns: 16px 1fr; column-gap: 14px; }
+      .node { width: 9px; height: 9px; margin-top: 6px; }
+      .news-card { padding: 14px 16px 16px; }
+      .news-card-head { flex-direction: column; gap: 4px; }
+    }
 
-      .sidebar-logo {
-        width: 100px;
-      }
-
-      .nav a,
-      .login-button {
-        min-width: 98px;
-        height: 32px;
-        font-size: 15px;
-      }
-
-      .title {
-        font-size: 40px;
-      }
-
-      .news-card {
-        padding: 10px 12px 12px;
-      }
-
-      .news-card h2 {
-        font-size: 24px;
-        line-height: 1.05;
-      }
-
-      .news-card p {
-        font-size: 15px;
-      }
-
-      .copyright {
-        font-size: 11px;
-      }
+    @media (prefers-reduced-motion: reduce) {
+      .news-item { opacity: 1; animation: none; }
+      .eyebrow .dot { animation: none; }
     }
   </style>
 </head>
@@ -262,13 +429,13 @@
     <aside class="sidebar">
       <img src="../hahslogo.png" alt="Half & Half Studios logo" class="sidebar-logo">
 
-      <nav class="nav">
+      <nav class="nav" aria-label="Primary">
+        <a href="../home/" aria-current="page">HOME</a>
         <a href="../aboutus/">ABOUT US</a>
         <a href="../our-team/">OUR TEAM</a>
         <a href="../games/">GAMES</a>
         <a href="../links/">LINKS</a>
         <a href="../application/">FORM</a>
-
         <a href="../support/">SUPPORT</a>
       </nav>
 
@@ -278,54 +445,55 @@
     </aside>
 
     <main class="content">
-      <h1 class="title">HOMEPAGE - NEWS</h1>
+      <p class="eyebrow"><span class="dot" aria-hidden="true"></span>Signal log</p>
+      <h1 class="title">What we're building</h1>
+      <p class="lede">A running log of everything shipping out of Half &amp; Half Studios — builds, releases, and the site you're standing on.</p>
 
-      <section class="news-list">
-       <article class="news-card">
-          <h2>
-            Added support:<span class="news-date">07/06/2026 by AxoTheDev</span>
-          </h2>
+      <ol class="news-list">
+        <li class="news-item">
+          <div class="rail"><span class="node" aria-hidden="true"></span></div>
+          <article class="news-card">
+            <div class="news-card-head">
+              <h2>Added support</h2>
+              <p class="news-date">07.06.2026 — <span class="author">AxoTheDev</span></p>
+            </div>
+            <p>Added the SUPPORT tab to the main nav with a working contact system. Please don't use it just for fun.</p>
+          </article>
+        </li>
 
-          <p>
-            Added the SUPPORT tab to the right main tab with now working system.
-            Please DO NOT use it just for fun. 
-          </p>
-        </article>
+        <li class="news-item">
+          <div class="rail"><span class="node" aria-hidden="true"></span></div>
+          <article class="news-card">
+            <div class="news-card-head">
+              <h2>Website finished</h2>
+              <p class="news-date">06.03.2026 — <span class="author">AxoTheDev</span></p>
+            </div>
+            <p>Officially finished the website and made some finishing touches. The release won't be announced here, but on our Discord server. Releasing 06.20.2026.</p>
+          </article>
+        </li>
 
-        
-        <article class="news-card">
-          <h2>
-            Webiste finished:<span class="news-date">06/03/2026 by AxoTheDev</span>
-          </h2>
+        <li class="news-item">
+          <div class="rail"><span class="node" aria-hidden="true"></span></div>
+          <article class="news-card">
+            <div class="news-card-head">
+              <h2>Added a few tabs</h2>
+              <p class="news-date">06.02.2026 — <span class="author">AxoTheDev</span></p>
+            </div>
+            <p>Added the Links, Form, Our Team &amp; Games tabs. Updated About Us, Form, Games, Links &amp; Our Team.</p>
+          </article>
+        </li>
 
-          <p>
-            Officialy finished the website and made some finishing touches. Website release
-            will not be announced here but on our discord server. Releasing on 06.20.2026.
-          </p>
-        </article>
-
-        <article class="news-card">
-          <h2>
-            Added something:<span class="news-date">06/02/2026 by AxoTheDev</span>
-          </h2>
-
-          <p>
-            Added the Links, forms, our team &amp; games tab. Updated About us, forms, games, links
-            &amp; our team tab.
-          </p>
-        </article>
-
-        <article class="news-card">
-          <h2>
-            Website created:<span class="news-date">05/25/2026 by AxoTheDev</span>
-          </h2>
-
-          <p>
-            Created the official Half &amp; Half Studios website and added all the tabs like About us,
-            Our Team, Games and Links. Also registered copyright for Half &amp; Half Studios.
-          </p>
-        </article>
-      </section>
+        <li class="news-item">
+          <div class="rail"><span class="node" aria-hidden="true"></span></div>
+          <article class="news-card">
+            <div class="news-card-head">
+              <h2>Website created</h2>
+              <p class="news-date">05.25.2026 — <span class="author">AxoTheDev</span></p>
+            </div>
+            <p>Created the official Half &amp; Half Studios website and added all the tabs, including About Us, Our Team, Games and Links. Also registered copyright for Half &amp; Half Studios.</p>
+          </article>
+        </li>
+      </ol>
     </main>
   </div>
 
