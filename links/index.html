@@ -9,43 +9,81 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
   <style>
+    :root {
+      --bg: #34343a;
+      --bg-deep: #121214;
+      --panel: #131315;
+      --panel-line: rgba(242, 242, 242, 0.07);
+      --text: #f2f2f2;
+      --text-dim: #98989e;
+      --accent: #1cade7;
+      --accent-dim: rgba(28, 173, 231, 0.22);
+      --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+      --display: "Inter", Arial, Helvetica, sans-serif;
+    }
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
-    html,
-    body {
+    html, body {
       width: 100%;
       min-height: 100%;
     }
 
     body {
-      background: #3c3c3c;
-      color: #f2f2f2;
-      font-family: "Inter", Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(1200px 600px at 85% -10%, rgba(28, 173, 231, 0.08), transparent 60%),
+        var(--bg);
+      color: var(--text);
+      font-family: var(--display);
       overflow-x: hidden;
+    }
+
+    a { color: inherit; }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 4px;
     }
 
     .page {
       min-height: 100vh;
       display: flex;
-      background: #3c3c3c;
+      background: transparent;
     }
+
+    /* ---------- Sidebar ---------- */
 
     .sidebar {
       width: 191px;
       min-height: 100vh;
-      background: #141414;
+      background: var(--bg-deep);
       display: flex;
       flex-direction: column;
       align-items: center;
       padding-top: 8px;
       flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      align-self: flex-start;
+      border-right: 1px solid var(--panel-line);
+    }
+
+    .sidebar::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: -1px;
+      width: 1px;
+      height: 100%;
+      background: linear-gradient(180deg, transparent, var(--accent-dim), transparent);
     }
 
     .sidebar-logo {
@@ -56,110 +94,205 @@
     .back-button {
       width: 162px;
       height: 41px;
-      border: 3px solid #1cade7;
+      border: 3px solid var(--accent);
       border-radius: 8px;
-      color: #1cade7;
+      color: var(--accent);
       background: transparent;
       text-decoration: none;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 25px;
+      gap: 8px;
+      font-size: 20px;
       font-weight: 900;
       letter-spacing: 1px;
       line-height: 1;
-      transition: 0.2s ease;
+      transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
     }
 
-    .back-button:hover {
-      background: #1cade7;
-      color: #141414;
+    .back-button::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0.35;
+      transition: opacity 0.15s ease;
+      flex-shrink: 0;
     }
+
+    .back-button:hover,
+    .back-button:focus-visible {
+      background: var(--accent);
+      color: var(--bg-deep);
+      box-shadow: 0 0 22px var(--accent-dim);
+    }
+
+    .back-button:hover::before,
+    .back-button:focus-visible::before {
+      opacity: 1;
+      background: var(--bg-deep);
+    }
+
+    /* ---------- Content ---------- */
 
     .content {
       flex: 1;
       min-height: 100vh;
-      padding: 8px 28px 60px;
+      padding: 56px 40px 70px 48px;
       overflow-x: hidden;
     }
 
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      font-family: var(--mono);
+      font-size: 12.5px;
+      font-weight: 500;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
+
+    .eyebrow .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px 1px var(--accent);
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
+    }
+
     .title {
-      font-size: clamp(42px, 5vw, 64px);
+      font-size: clamp(38px, 4.6vw, 56px);
       font-weight: 900;
-      color: #f2f2f2;
-      letter-spacing: 1px;
+      color: var(--text);
+      letter-spacing: 0.5px;
+      line-height: 1.02;
+      margin-bottom: 12px;
+    }
+
+    .lede {
+      font-size: 16px;
+      color: var(--text-dim);
+      max-width: 560px;
+      line-height: 1.5;
+      margin-bottom: 46px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid var(--panel-line);
+    }
+
+    /* ---------- Link sections ---------- */
+
+    .link-section {
+      margin-bottom: 46px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: clamp(22px, 2.6vw, 28px);
+      font-weight: 900;
+      color: var(--text);
+      letter-spacing: 0.5px;
       line-height: 1;
-      margin-bottom: 30px;
+      text-transform: uppercase;
+    }
+
+    .section-count {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-dim);
+      letter-spacing: 0.5px;
     }
 
     .links-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(170px, 220px));
-      gap: 26px;
+      gap: 20px;
       align-items: start;
     }
 
     .link-card {
-      background: #111111;
-      border-radius: 14px;
-      padding: 18px;
-      min-height: 230px;
+      position: relative;
+      background: var(--panel);
+      border: 1px solid var(--panel-line);
+      border-radius: 12px;
+      padding: 22px 18px 20px;
+      min-height: 210px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
       text-align: center;
       text-decoration: none;
-      color: #f2f2f2;
-      transition: 0.2s ease;
+      color: var(--text);
+      transition: transform 0.18s ease, border-color 0.18s ease;
     }
 
-    .link-card:hover {
+    .link-card:hover,
+    .link-card:focus-visible {
       transform: translateY(-4px);
-      box-shadow: 0 0 0 3px #1cade7;
+      border-color: var(--accent);
+      box-shadow: 0 0 22px var(--accent-dim);
     }
 
     .link-card img {
-      width: 125px;
-      height: 125px;
+      width: 88px;
+      height: 88px;
       object-fit: contain;
-      margin-bottom: 15px;
+      margin-bottom: 16px;
+      opacity: 0.95;
     }
 
     .link-card h2 {
-      font-size: 23px;
-      font-weight: 900;
-      color: #f2f2f2;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text);
       letter-spacing: 1px;
-      line-height: 1.1;
     }
 
     .link-card p {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 400;
-      color: #bdbdbd;
-      margin-top: 6px;
+      color: var(--text-dim);
+      margin-top: 5px;
     }
 
     .hidden-link {
       display: none;
     }
 
+    /* ---------- Footer ---------- */
+
     .copyright {
       position: fixed;
       left: 191px;
       right: 0;
       bottom: 0;
-      height: 26px;
+      height: 30px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #f2f2f2;
-      font-size: 15px;
-      font-weight: 400;
-      letter-spacing: 0.2px;
+      color: var(--text-dim);
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.3px;
       z-index: 5;
-      background: #3c3c3c;
+      background: linear-gradient(0deg, rgba(20,20,20,0.9), transparent);
     }
 
     @media (max-width: 800px) {
@@ -175,7 +308,14 @@
         justify-content: flex-start;
         gap: 12px;
         overflow-x: auto;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        border-right: none;
+        border-bottom: 1px solid var(--panel-line);
       }
+
+      .sidebar::after { display: none; }
 
       .sidebar-logo {
         width: 120px;
@@ -194,25 +334,23 @@
 
       .content {
         min-height: calc(100vh - 76px);
-        padding: 18px 18px 60px;
+        padding: 26px 20px 60px;
       }
 
       .links-grid {
         grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
-        gap: 18px;
+        gap: 16px;
       }
 
       .copyright {
         left: 0;
-        font-size: 13px;
+        font-size: 11px;
         padding: 0 10px;
       }
     }
 
     @media (max-width: 480px) {
-      .sidebar-logo {
-        width: 100px;
-      }
+      .sidebar-logo { width: 100px; }
 
       .back-button {
         min-width: 98px;
@@ -220,27 +358,24 @@
         font-size: 15px;
       }
 
-      .title {
-        font-size: 40px;
-      }
+      .title { font-size: 34px; }
+      .section-title { font-size: 20px; }
 
       .link-card {
-        min-height: 200px;
-        padding: 14px;
+        min-height: 185px;
+        padding: 18px 14px 16px;
       }
 
       .link-card img {
-        width: 105px;
-        height: 105px;
+        width: 72px;
+        height: 72px;
       }
 
       .link-card h2 {
-        font-size: 19px;
+        font-size: 16px;
       }
 
-      .copyright {
-        font-size: 11px;
-      }
+      .copyright { font-size: 11px; }
     }
   </style>
 </head>
@@ -249,77 +384,94 @@
   <div class="page">
     <aside class="sidebar">
       <img src="../hahslogo.png" alt="Half & Half Studios logo" class="sidebar-logo">
-
       <a href="../homepage/" class="back-button">BACK</a>
     </aside>
 
     <main class="content">
-      <h1 class="title">LINKS</h1>
+      <p class="eyebrow"><span class="dot" aria-hidden="true"></span>Elsewhere</p>
+      <h1 class="title">Links</h1>
+      <p class="lede">Every channel where Half &amp; Half Studios actually shows up.</p>
 
-      <section class="links-grid">
-        <a class="link-card" href="https://www.tiktok.com/@halfahalfstudiosrbx?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer">
-          <img src="../discotools-xyz-icon.png" alt="Half & Half Studios TikTok">
-          <div>
-            <h2>TIKTOK</h2>
-            <p>Half &amp; Half Studios</p>
-          </div>
-        </a>
+      <section class="link-section">
+        <div class="section-head">
+          <h2 class="section-title">Official</h2>
+          <span class="section-count">— 4</span>
+        </div>
 
-        <a class="link-card" href="https://www.youtube.com/@halfahalfstudios" target="_blank" rel="noopener noreferrer">
-          <img src="../discotools-xyz-icon%20(1).png" alt="Half & Half Studios YouTube">
-          <div>
-            <h2>YOUTUBE</h2>
-            <p>Half &amp; Half Studios</p>
-          </div>
-        </a>
+        <div class="links-grid">
+          <a class="link-card" href="https://www.tiktok.com/@halfahalfstudiosrbx?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer">
+            <img src="../discotools-xyz-icon.png" alt="Half & Half Studios TikTok">
+            <div>
+              <h2>TikTok</h2>
+              <p>Half &amp; Half Studios</p>
+            </div>
+          </a>
 
-        <a class="link-card" href="https://github.com/Half-and-Half-Studios" target="_blank" rel="noopener noreferrer">
-          <img src="../discotools-xyz-icon%20(2).png" alt="Half & Half Studios GitHub">
-          <div>
-            <h2>GITHUB</h2>
-            <p>Official GitHub</p>
-          </div>
-        </a>
+          <a class="link-card" href="https://www.youtube.com/@halfahalfstudios" target="_blank" rel="noopener noreferrer">
+            <img src="../discotools-xyz-icon%20(1).png" alt="Half & Half Studios YouTube">
+            <div>
+              <h2>YouTube</h2>
+              <p>Half &amp; Half Studios</p>
+            </div>
+          </a>
 
-        <a class="link-card" href="https://discord.gg/q64gbAqcP5" target="_blank" rel="noopener noreferrer">
-          <img src="../discotools-xyz-icon%20(10).png" alt="Half & Half Studios Discord">
-          <div>
-            <h2>DISCORD</h2>
-            <p>Official Server</p>
-          </div>
-        </a>
+          <a class="link-card" href="https://github.com/Half-and-Half-Studios" target="_blank" rel="noopener noreferrer">
+            <img src="../discotools-xyz-icon%20(2).png" alt="Half & Half Studios GitHub">
+            <div>
+              <h2>GitHub</h2>
+              <p>Official GitHub</p>
+            </div>
+          </a>
 
-        <a class="link-card" href="https://www.tiktok.com/@sehethedev?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer">
-          <img src="../discotools-xyz-icon%20(3).png" alt="Seh Founder">
-          <div>
-            <h2>SEH</h2>
-            <p>Founder (Owner)</p>
-          </div>
-        </a>
+          <a class="link-card" href="https://discord.gg/q64gbAqcP5" target="_blank" rel="noopener noreferrer">
+            <img src="../discotools-xyz-icon%20(10).png" alt="Half & Half Studios Discord">
+            <div>
+              <h2>Discord</h2>
+              <p>Official server</p>
+            </div>
+          </a>
 
-        <a class="link-card" href="https://www.tiktok.com/@axo_the_dev?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer">
-          <img src="../discotools-xyz-icon%20(4).png" alt="AxoTheDev Co-Founder">
-          <div>
-            <h2>AXOTHEDEV</h2>
-            <p>Co-Founder (Co-Owner)</p>
-          </div>
-        </a>
+          <a class="link-card hidden-link" href="#">
+            <img src="../discotools-xyz-icon%20(5).png" alt="Green tools">
+            <div>
+              <h2>Tools</h2>
+              <p>Coming soon</p>
+            </div>
+          </a>
 
-        <a class="link-card hidden-link" href="#">
-          <img src="../discotools-xyz-icon%20(5).png" alt="Green tools">
-          <div>
-            <h2>TOOLS</h2>
-            <p>Coming soon</p>
-          </div>
-        </a>
+          <a class="link-card hidden-link" href="#">
+            <img src="../discotools-xyz-icon%20(6).png" alt="Blue hammer">
+            <div>
+              <h2>Tools</h2>
+              <p>Coming soon</p>
+            </div>
+          </a>
+        </div>
+      </section>
 
-        <a class="link-card hidden-link" href="#">
-          <img src="../discotools-xyz-icon%20(6).png" alt="Blue hammer">
-          <div>
-            <h2>TOOLS</h2>
-            <p>Coming soon</p>
-          </div>
-        </a>
+      <section class="link-section">
+        <div class="section-head">
+          <h2 class="section-title">Founders</h2>
+          <span class="section-count">— 2</span>
+        </div>
+
+        <div class="links-grid">
+          <a class="link-card" href="https://www.tiktok.com/@sehethedev?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer">
+            <img src="../discotools-xyz-icon%20(3).png" alt="Seh, Founder">
+            <div>
+              <h2>Seh</h2>
+              <p>Founder (Owner)</p>
+            </div>
+          </a>
+
+          <a class="link-card" href="https://www.tiktok.com/@axo_the_dev?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer">
+            <img src="../discotools-xyz-icon%20(4).png" alt="AxoTheDev, Co-Founder">
+            <div>
+              <h2>AxoTheDev</h2>
+              <p>Co-Founder (Co-Owner)</p>
+            </div>
+          </a>
+        </div>
       </section>
     </main>
   </div>
