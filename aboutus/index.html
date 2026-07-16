@@ -9,38 +9,64 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
   <style>
+    :root {
+      --bg: #34343a;
+      --bg-deep: #121214;
+      --panel: #131315;
+      --panel-line: rgba(242, 242, 242, 0.07);
+      --text: #f2f2f2;
+      --text-dim: #98989e;
+      --accent: #1cade7;
+      --accent-dim: rgba(28, 173, 231, 0.22);
+      --accent-warm: #e78a1c;
+      --accent-warm-dim: rgba(231, 138, 28, 0.14);
+      --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+      --display: "Inter", Arial, Helvetica, sans-serif;
+    }
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
-    html,
-    body {
+    html, body {
       width: 100%;
       min-height: 100%;
     }
 
     body {
-      background: #3c3c3c;
-      color: #f2f2f2;
-      font-family: "Inter", Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(1200px 600px at 85% -10%, rgba(28, 173, 231, 0.08), transparent 60%),
+        var(--bg);
+      color: var(--text);
+      font-family: var(--display);
       overflow-x: hidden;
+    }
+
+    a { color: inherit; }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 4px;
     }
 
     .page {
       min-height: 100vh;
       display: flex;
-      background: #3c3c3c;
+      background: transparent;
     }
+
+    /* ---------- Sidebar ---------- */
 
     .sidebar {
       width: 191px;
       min-height: 100vh;
-      background: #141414;
+      background: var(--bg-deep);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -49,6 +75,17 @@
       position: sticky;
       top: 0;
       align-self: flex-start;
+      border-right: 1px solid var(--panel-line);
+    }
+
+    .sidebar::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: -1px;
+      width: 1px;
+      height: 100%;
+      background: linear-gradient(180deg, transparent, var(--accent-dim), transparent);
     }
 
     .sidebar-logo {
@@ -59,90 +96,278 @@
     .back-button {
       width: 162px;
       height: 41px;
-      border: 3px solid #1cade7;
+      border: 3px solid var(--accent);
       border-radius: 8px;
-      color: #1cade7;
+      color: var(--accent);
       background: transparent;
       text-decoration: none;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 25px;
+      gap: 8px;
+      font-size: 20px;
       font-weight: 900;
       letter-spacing: 1px;
       line-height: 1;
-      transition: 0.2s ease;
+      transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
     }
 
-    .back-button:hover {
-      background: #1cade7;
-      color: #141414;
+    .back-button::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0.35;
+      transition: opacity 0.15s ease;
+      flex-shrink: 0;
     }
+
+    .back-button:hover,
+    .back-button:focus-visible {
+      background: var(--accent);
+      color: var(--bg-deep);
+      box-shadow: 0 0 22px var(--accent-dim);
+    }
+
+    .back-button:hover::before,
+    .back-button:focus-visible::before {
+      opacity: 1;
+      background: var(--bg-deep);
+    }
+
+    /* ---------- Content ---------- */
 
     .content {
       flex: 1;
       min-height: 100vh;
-      padding: 8px 40px 70px;
+      padding: 56px 40px 70px 48px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      font-family: var(--mono);
+      font-size: 12.5px;
+      font-weight: 500;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
+
+    .eyebrow .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px 1px var(--accent);
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
     }
 
     .title {
-      font-size: clamp(42px, 5vw, 64px);
+      font-size: clamp(38px, 4.6vw, 56px);
       font-weight: 900;
-      color: #f2f2f2;
-      letter-spacing: 1px;
-      line-height: 1;
-      margin-bottom: 40px;
+      color: var(--text);
+      letter-spacing: 0.5px;
+      line-height: 1.02;
+      margin-bottom: 12px;
+    }
+
+    .lede {
+      font-size: 16px;
+      color: var(--text-dim);
+      max-width: 560px;
+      line-height: 1.5;
+      margin-bottom: 46px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid var(--panel-line);
     }
 
     .about-container {
-      max-width: 980px;
-    }
-
-    .about-section {
-      margin-bottom: 34px;
-    }
-
-    .about-section h2 {
-      color: #1cade7;
-      font-size: clamp(24px, 3vw, 36px);
-      font-weight: 900;
-      margin-bottom: 12px;
-      letter-spacing: 0.5px;
-    }
-
-    .about-section p {
-      color: #f2f2f2;
-      font-size: clamp(17px, 1.7vw, 22px);
-      font-weight: 400;
-      line-height: 1.55;
       max-width: 900px;
     }
 
-    .about-section a {
-      color: #1cade7;
+    /* ---------- Origin timeline ---------- */
+
+    .origin-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      margin-bottom: 40px;
+    }
+
+    .origin-item {
+      position: relative;
+      display: grid;
+      grid-template-columns: 22px 1fr;
+      column-gap: 22px;
+      padding-bottom: 30px;
+      opacity: 0;
+      animation: rise 0.5s ease forwards;
+    }
+
+    .origin-item:nth-child(1) { animation-delay: 0.02s; }
+    .origin-item:nth-child(2) { animation-delay: 0.10s; }
+    .origin-item:nth-child(3) { animation-delay: 0.18s; }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .rail {
+      position: relative;
+      display: flex;
+      justify-content: center;
+    }
+
+    .rail::before {
+      content: "";
+      position: absolute;
+      top: 20px;
+      bottom: -30px;
+      width: 1px;
+      background: var(--panel-line);
+    }
+
+    .origin-item:last-child .rail::before {
+      display: none;
+    }
+
+    .node {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: var(--bg-deep);
+      border: 2px solid var(--accent);
+      margin-top: 8px;
+      box-shadow: 0 0 0 4px rgba(28, 173, 231, 0.08);
+      flex-shrink: 0;
+      z-index: 1;
+    }
+
+    .origin-item:last-child .node {
+      background: var(--accent);
+      box-shadow: 0 0 12px 1px var(--accent), 0 0 0 4px rgba(28, 173, 231, 0.12);
+    }
+
+    .origin-card {
+      background: var(--panel);
+      border: 1px solid var(--panel-line);
+      border-radius: 10px;
+      padding: 18px 22px 20px;
+      transition: border-color 0.15s ease;
+    }
+
+    .origin-card:hover {
+      border-color: rgba(28, 173, 231, 0.35);
+    }
+
+    .origin-card-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    .origin-card h2 {
+      font-size: clamp(19px, 2vw, 22px);
+      font-weight: 800;
+      letter-spacing: 0.2px;
+      color: var(--text);
+    }
+
+    .origin-tag {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+
+    .origin-card p {
+      font-size: 15.5px;
+      font-weight: 400;
+      line-height: 1.6;
+      color: #cfcfcf;
+      max-width: 640px;
+    }
+
+    .origin-card a {
+      color: var(--accent);
       font-weight: 700;
       text-decoration: none;
     }
 
-    .about-section a:hover {
+    .origin-card a:hover {
       text-decoration: underline;
     }
+
+    /* ---------- Goal callout ---------- */
+
+    .goal-section {
+      position: relative;
+      background: var(--panel);
+      border: 1px solid var(--accent-warm-dim);
+      border-left: 3px solid var(--accent-warm);
+      border-radius: 10px;
+      padding: 24px 26px 26px;
+    }
+
+    .goal-section .eyebrow {
+      color: var(--accent-warm);
+      margin-bottom: 10px;
+    }
+
+    .goal-section .eyebrow .dot {
+      background: var(--accent-warm);
+      box-shadow: 0 0 10px 1px var(--accent-warm);
+    }
+
+    .goal-section h2 {
+      font-size: clamp(20px, 2.2vw, 24px);
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 10px;
+      letter-spacing: 0.2px;
+    }
+
+    .goal-section p {
+      font-size: 15.5px;
+      font-weight: 400;
+      line-height: 1.6;
+      color: #cfcfcf;
+      max-width: 680px;
+    }
+
+    /* ---------- Footer ---------- */
 
     .copyright {
       position: fixed;
       left: 191px;
       right: 0;
       bottom: 0;
-      height: 26px;
+      height: 30px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #f2f2f2;
-      font-size: 15px;
-      font-weight: 400;
-      letter-spacing: 0.2px;
+      color: var(--text-dim);
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.3px;
       z-index: 5;
-      background: #3c3c3c;
+      background: linear-gradient(0deg, rgba(20,20,20,0.9), transparent);
     }
 
     @media (max-width: 800px) {
@@ -161,7 +386,11 @@
         position: sticky;
         top: 0;
         z-index: 10;
+        border-right: none;
+        border-bottom: 1px solid var(--panel-line);
       }
+
+      .sidebar::after { display: none; }
 
       .sidebar-logo {
         width: 135px;
@@ -180,24 +409,18 @@
 
       .content {
         min-height: calc(100vh - 76px);
-        padding: 18px 18px 70px;
-      }
-
-      .title {
-        margin-bottom: 28px;
+        padding: 26px 20px 70px;
       }
 
       .copyright {
         left: 0;
-        font-size: 13px;
+        font-size: 11px;
         padding: 0 10px;
       }
     }
 
     @media (max-width: 480px) {
-      .sidebar-logo {
-        width: 115px;
-      }
+      .sidebar-logo { width: 115px; }
 
       .back-button {
         min-width: 98px;
@@ -205,22 +428,18 @@
         font-size: 15px;
       }
 
-      .title {
-        font-size: 40px;
-      }
+      .title { font-size: 34px; }
 
-      .about-section {
-        margin-bottom: 28px;
-      }
+      .origin-item { grid-template-columns: 16px 1fr; column-gap: 14px; }
+      .node { width: 9px; height: 9px; margin-top: 6px; }
+      .origin-card { padding: 14px 16px 16px; }
+      .origin-card-head { flex-direction: column; gap: 4px; }
+      .goal-section { padding: 18px 18px 20px; }
+    }
 
-      .about-section p {
-        font-size: 16px;
-        line-height: 1.55;
-      }
-
-      .copyright {
-        font-size: 11px;
-      }
+    @media (prefers-reduced-motion: reduce) {
+      .origin-item { opacity: 1; animation: none; }
+      .eyebrow .dot { animation: none; }
     }
   </style>
 </head>
@@ -229,48 +448,70 @@
   <div class="page">
     <aside class="sidebar">
       <img src="../hahslogo.png" alt="Half & Half Studios logo" class="sidebar-logo">
-
       <a href="../homepage/" class="back-button">BACK</a>
     </aside>
 
     <main class="content">
-      <h1 class="title">ABOUT US</h1>
+      <p class="eyebrow"><span class="dot" aria-hidden="true"></span>About</p>
+      <h1 class="title">Who we are</h1>
+      <p class="lede">Half &amp; Half Studios started small, stayed small on purpose, and is still figuring out exactly what it wants to be.</p>
 
       <div class="about-container">
-        <section class="about-section">
-          <h2>Our Story</h2>
-          <p>
-            Half &amp; Half Studios is a game development studio founded in 2023 by Seh and AxoTheDev,
-            formerly known as Sehelinda and Axoloch. The studio was originally created for
-            <a href="https://www.roblox.com/" target="_blank" rel="noopener noreferrer">Roblox</a>,
-            where we developed many game concepts, some of which were only ideas, while others were officially published.
-          </p>
-        </section>
+        <ol class="origin-list">
+          <li class="origin-item">
+            <div class="rail"><span class="node" aria-hidden="true"></span></div>
+            <article class="origin-card">
+              <div class="origin-card-head">
+                <h2>Our story</h2>
+                <p class="origin-tag">2023 — Founded</p>
+              </div>
+              <p>
+                Half &amp; Half Studios is a game development studio founded in 2023 by Seh and AxoTheDev,
+                formerly known as Sehelinda and Axoloch. The studio was originally built for
+                <a href="https://www.roblox.com/" target="_blank" rel="noopener noreferrer">Roblox</a>,
+                where we developed many game concepts — some that stayed ideas, others that made it to release.
+              </p>
+            </article>
+          </li>
 
-        <section class="about-section">
-          <h2>Our Community</h2>
-          <p>
-            Over time, Half &amp; Half Studios built a small but meaningful community, reaching 44 users
-            and 9 staff members. We also created a small
-            <a href="https://discord.com/" target="_blank" rel="noopener noreferrer">Discord</a>
-            community, with the goal of welcoming more members and growing alongside our players.
-          </p>
-        </section>
+          <li class="origin-item">
+            <div class="rail"><span class="node" aria-hidden="true"></span></div>
+            <article class="origin-card">
+              <div class="origin-card-head">
+                <h2>Our community</h2>
+                <p class="origin-tag">Ongoing</p>
+              </div>
+              <p>
+                Over time, we built a small but meaningful community — 44 users and 9 staff members strong.
+                We also run a small
+                <a href="https://discord.com/" target="_blank" rel="noopener noreferrer">Discord</a>
+                server, with the goal of welcoming more members and growing alongside our players.
+              </p>
+            </article>
+          </li>
 
-        <section class="about-section">
-          <h2>Moving Forward</h2>
-          <p>
-            After 2.5 years of making games on Roblox, we decided in 2026 to private our previous projects
-            and begin creating games outside of the platform. This decision was made because of the Roblox
-            release fees and the limitations we faced while developing there.
-          </p>
-        </section>
+          <li class="origin-item">
+            <div class="rail"><span class="node" aria-hidden="true"></span></div>
+            <article class="origin-card">
+              <div class="origin-card-head">
+                <h2>Moving forward</h2>
+                <p class="origin-tag">2026 — Pivot</p>
+              </div>
+              <p>
+                After 2.5 years of making games on Roblox, we decided in 2026 to make our previous projects
+                private and start building outside the platform — a call made because of Roblox's release
+                fees and the limitations we kept running into.
+              </p>
+            </article>
+          </li>
+        </ol>
 
-        <section class="about-section">
-          <h2>Our Goal</h2>
+        <section class="goal-section">
+          <p class="eyebrow"><span class="dot" aria-hidden="true"></span>Where we're headed</p>
+          <h2>Our goal</h2>
           <p>
-            Our main goal is to create games that can be exciting and enjoyable for every kind of player.
-            We also listen to ideas, requests, and wishes from our community, so we can make our games
+            Our main goal is to create games that are exciting and enjoyable for every kind of player.
+            We listen to ideas, requests, and wishes from our community, so we can make what we build
             as fun and polished as possible.
           </p>
         </section>
