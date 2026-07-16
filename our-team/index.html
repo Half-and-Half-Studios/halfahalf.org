@@ -9,43 +9,81 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
   <style>
+    :root {
+      --bg: #34343a;
+      --bg-deep: #121214;
+      --panel: #131315;
+      --panel-line: rgba(242, 242, 242, 0.07);
+      --text: #f2f2f2;
+      --text-dim: #98989e;
+      --accent: #1cade7;
+      --accent-dim: rgba(28, 173, 231, 0.22);
+      --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+      --display: "Inter", Arial, Helvetica, sans-serif;
+    }
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
-    html,
-    body {
+    html, body {
       width: 100%;
       min-height: 100%;
     }
 
     body {
-      background: #3c3c3c;
-      color: #f2f2f2;
-      font-family: "Inter", Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(1200px 600px at 85% -10%, rgba(28, 173, 231, 0.08), transparent 60%),
+        var(--bg);
+      color: var(--text);
+      font-family: var(--display);
       overflow-x: hidden;
+    }
+
+    a { color: inherit; }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 4px;
     }
 
     .page {
       min-height: 100vh;
       display: flex;
-      background: #3c3c3c;
+      background: transparent;
     }
+
+    /* ---------- Sidebar ---------- */
 
     .sidebar {
       width: 191px;
       min-height: 100vh;
-      background: #141414;
+      background: var(--bg-deep);
       display: flex;
       flex-direction: column;
       align-items: center;
       padding-top: 8px;
       flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      align-self: flex-start;
+      border-right: 1px solid var(--panel-line);
+    }
+
+    .sidebar::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: -1px;
+      width: 1px;
+      height: 100%;
+      background: linear-gradient(180deg, transparent, var(--accent-dim), transparent);
     }
 
     .sidebar-logo {
@@ -56,217 +94,266 @@
     .back-button {
       width: 162px;
       height: 41px;
-      border: 3px solid #1cade7;
+      border: 3px solid var(--accent);
       border-radius: 8px;
-      color: #1cade7;
+      color: var(--accent);
       background: transparent;
       text-decoration: none;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 25px;
+      gap: 8px;
+      font-size: 20px;
       font-weight: 900;
       letter-spacing: 1px;
       line-height: 1;
-      transition: 0.2s ease;
+      transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
     }
 
-    .back-button:hover {
-      background: #1cade7;
-      color: #141414;
+    .back-button::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0.35;
+      transition: opacity 0.15s ease;
+      flex-shrink: 0;
     }
+
+    .back-button:hover,
+    .back-button:focus-visible {
+      background: var(--accent);
+      color: var(--bg-deep);
+      box-shadow: 0 0 22px var(--accent-dim);
+    }
+
+    .back-button:hover::before,
+    .back-button:focus-visible::before {
+      opacity: 1;
+      background: var(--bg-deep);
+    }
+
+    /* ---------- Content ---------- */
 
     .content {
       flex: 1;
       min-height: 100vh;
-      padding: 8px 28px 65px;
+      padding: 56px 40px 70px 48px;
       overflow-x: hidden;
     }
 
-    .title {
-      font-size: clamp(42px, 5vw, 64px);
-      font-weight: 900;
-      color: #f2f2f2;
-      letter-spacing: 1px;
-      line-height: 1;
-      margin-bottom: 32px;
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      font-family: var(--mono);
+      font-size: 12.5px;
+      font-weight: 500;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 14px;
     }
 
+    .eyebrow .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px 1px var(--accent);
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
+    }
+
+    .title {
+      font-size: clamp(38px, 4.6vw, 56px);
+      font-weight: 900;
+      color: var(--text);
+      letter-spacing: 0.5px;
+      line-height: 1.02;
+      margin-bottom: 12px;
+    }
+
+    .lede {
+      font-size: 16px;
+      color: var(--text-dim);
+      max-width: 560px;
+      line-height: 1.5;
+      margin-bottom: 46px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid var(--panel-line);
+    }
+
+    /* ---------- Team sections ---------- */
+
     .team-section {
-      margin-bottom: 42px;
+      margin-bottom: 46px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 20px;
     }
 
     .section-title {
-      font-size: clamp(28px, 3.5vw, 42px);
+      font-size: clamp(22px, 2.6vw, 28px);
       font-weight: 900;
-      color: #1cade7;
-      letter-spacing: 1px;
+      color: var(--text);
+      letter-spacing: 0.5px;
       line-height: 1;
-      margin-bottom: 18px;
+      text-transform: uppercase;
+    }
+
+    .section-count {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-dim);
+      letter-spacing: 0.5px;
     }
 
     .team-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 340px));
-      gap: 28px;
+      gap: 22px;
       align-items: stretch;
     }
 
     .team-card {
       position: relative;
-      min-height: 250px;
-      background: #111111;
-      color: #f2f2f2;
-      padding: 30px 26px 28px;
-      clip-path: polygon(
-        0 10%,
-        13% 0,
-        100% 0,
-        100% 90%,
-        87% 100%,
-        0 100%
-      );
-      transition: 0.2s ease;
-      overflow: hidden;
+      min-height: 220px;
+      background: var(--panel);
+      color: var(--text);
+      padding: 26px 24px 24px;
+      border: 1px solid var(--panel-line);
+      border-radius: 10px;
+      border-top: 3px solid var(--tier-color, var(--accent));
+      transition: transform 0.18s ease, border-color 0.18s ease;
     }
 
     .team-card:hover {
-      transform: translateY(-5px);
+      transform: translateY(-4px);
+      border-color: rgba(255, 255, 255, 0.14);
+      border-top-color: var(--tier-color, var(--accent));
     }
 
-    .team-card::before {
-      content: "";
-      position: absolute;
-      inset: 3px;
-      background: #181818;
-      clip-path: polygon(
-        0 10%,
-        13% 0,
-        100% 0,
-        100% 90%,
-        87% 100%,
-        0 100%
-      );
-      z-index: 0;
+    .team-card.owner       { --tier-color: #35d62b; }
+    .team-card.co-owner    { --tier-color: #e92b55; }
+    .team-card.developer   { --tier-color: #39ff00; }
+    .team-card.admin       { --tier-color: #1cade7; }
+    .team-card.tester      { --tier-color: #f2f2f2; }
+
+    .tier-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      color: var(--tier-color, var(--accent));
+      margin-bottom: 16px;
     }
 
-    .team-card::after {
-      content: "";
-      position: absolute;
-      left: 26px;
-      right: 26px;
-      bottom: 24px;
-      height: 3px;
-      background: #1cade7;
-      z-index: 1;
-    }
-
-    .team-inner {
-      position: relative;
-      z-index: 2;
-      min-height: 190px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+    .tier-tag .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--tier-color, var(--accent));
+      box-shadow: 0 0 8px 1px var(--tier-color, var(--accent));
+      flex-shrink: 0;
     }
 
     .name-row {
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       flex-wrap: wrap;
     }
 
     .username {
-      font-size: 34px;
+      font-size: 26px;
       font-weight: 900;
-      color: #f2f2f2;
+      color: var(--text);
       line-height: 1;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.3px;
     }
 
     .role-icon {
-      width: 38px;
-      height: 38px;
+      width: 24px;
+      height: 24px;
       object-fit: contain;
+      opacity: 0.9;
     }
 
     .role {
-      font-size: 21px;
+      font-size: 15px;
       font-weight: 400;
-      color: #d9d9d9;
-      line-height: 1.3;
+      color: var(--text-dim);
+      line-height: 1.4;
       max-width: 260px;
       margin-bottom: 18px;
     }
 
     .socials {
       display: flex;
-      gap: 10px;
+      gap: 9px;
       align-items: center;
       flex-wrap: wrap;
     }
 
     .social-link {
-      width: 42px;
-      height: 42px;
-      border: 2px solid #1cade7;
-      border-radius: 9px;
+      width: 38px;
+      height: 38px;
+      border: 2px solid var(--panel-line);
+      border-radius: 8px;
       background: transparent;
       display: flex;
       align-items: center;
       justify-content: center;
       text-decoration: none;
-      transition: 0.2s ease;
+      transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
     }
 
-    .social-link:hover {
-      background: #1cade7;
+    .social-link:hover,
+    .social-link:focus-visible {
+      border-color: var(--tier-color, var(--accent));
+      background: rgba(255, 255, 255, 0.04);
       transform: translateY(-2px);
     }
 
     .social-link img {
-      width: 30px;
-      height: 30px;
+      width: 20px;
+      height: 20px;
       object-fit: contain;
     }
 
-    .owner {
-      box-shadow: 0 0 0 3px #35d62b;
-    }
-
-    .co-owner {
-      box-shadow: 0 0 0 3px #e92b55;
-    }
-
-    .developer {
-      box-shadow: 0 0 0 3px #39ff00;
-    }
-
-    .admin {
-      box-shadow: 0 0 0 3px #1cade7;
-    }
-
-    .tester {
-      box-shadow: 0 0 0 3px #f2f2f2;
-    }
+    /* ---------- Footer ---------- */
 
     .copyright {
       position: fixed;
       left: 191px;
       right: 0;
       bottom: 0;
-      height: 26px;
+      height: 30px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #f2f2f2;
-      font-size: 15px;
-      font-weight: 400;
-      letter-spacing: 0.2px;
+      color: var(--text-dim);
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.3px;
       z-index: 5;
-      background: #3c3c3c;
+      background: linear-gradient(0deg, rgba(20,20,20,0.9), transparent);
     }
 
     @media (max-width: 800px) {
@@ -282,7 +369,14 @@
         justify-content: flex-start;
         gap: 12px;
         overflow-x: auto;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        border-right: none;
+        border-bottom: 1px solid var(--panel-line);
       }
+
+      .sidebar::after { display: none; }
 
       .sidebar-logo {
         width: 120px;
@@ -301,25 +395,23 @@
 
       .content {
         min-height: calc(100vh - 76px);
-        padding: 18px 18px 65px;
+        padding: 26px 20px 70px;
       }
 
       .team-grid {
         grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-        gap: 22px;
+        gap: 18px;
       }
 
       .copyright {
         left: 0;
-        font-size: 13px;
+        font-size: 11px;
         padding: 0 10px;
       }
     }
 
     @media (max-width: 480px) {
-      .sidebar-logo {
-        width: 100px;
-      }
+      .sidebar-logo { width: 100px; }
 
       .back-button {
         min-width: 98px;
@@ -327,45 +419,22 @@
         font-size: 15px;
       }
 
-      .title {
-        font-size: 40px;
-      }
-
-      .section-title {
-        font-size: 28px;
-      }
+      .title { font-size: 34px; }
+      .section-title { font-size: 20px; }
 
       .team-card {
-        min-height: 235px;
-        padding: 26px 22px;
+        min-height: 200px;
+        padding: 22px 20px 20px;
       }
 
-      .username {
-        font-size: 28px;
-      }
+      .username { font-size: 22px; }
+      .role-icon { width: 20px; height: 20px; }
+      .role { font-size: 14px; }
 
-      .role-icon {
-        width: 32px;
-        height: 32px;
-      }
+      .social-link { width: 34px; height: 34px; }
+      .social-link img { width: 18px; height: 18px; }
 
-      .role {
-        font-size: 18px;
-      }
-
-      .social-link {
-        width: 38px;
-        height: 38px;
-      }
-
-      .social-link img {
-        width: 27px;
-        height: 27px;
-      }
-
-      .copyright {
-        font-size: 11px;
-      }
+      .copyright { font-size: 11px; }
     }
   </style>
 </head>
@@ -374,28 +443,33 @@
   <div class="page">
     <aside class="sidebar">
       <img src="../hahslogo.png" alt="Half & Half Studios logo" class="sidebar-logo">
-
       <a href="../homepage/" class="back-button">BACK</a>
     </aside>
 
     <main class="content">
-      <h1 class="title">OUR TEAM</h1>
+      <p class="eyebrow"><span class="dot" aria-hidden="true"></span>Roster</p>
+      <h1 class="title">Our team</h1>
+      <p class="lede">The people behind Half &amp; Half Studios, grouped by what they own — not just what they're called.</p>
 
       <section class="team-section">
-        <h2 class="section-title">LEADERSHIP</h2>
+        <div class="section-head">
+          <h2 class="section-title">Leadership</h2>
+          <span class="section-count">— 2</span>
+        </div>
 
         <div class="team-grid">
           <article class="team-card owner">
             <div class="team-inner">
+              <p class="tier-tag"><span class="dot" aria-hidden="true"></span>Owner</p>
               <div class="name-row">
                 <h3 class="username">Seh</h3>
-                <img src="../discotools-xyz-icon%20(3).png" alt="Owner icon" class="role-icon">
+                <img src="../discotools-xyz-icon%20(3).png" alt="" class="role-icon">
               </div>
 
               <p class="role">Owner, Programmer, Founder</p>
 
               <div class="socials">
-                <a class="social-link" href="https://www.tiktok.com/@sehethedev?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" aria-label="Seh TikTok">
+                <a class="social-link" href="https://www.tiktok.com/@sehethedev?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" aria-label="Seh on TikTok">
                   <img src="../discotools-xyz-icon.png" alt="TikTok">
                 </a>
               </div>
@@ -404,19 +478,20 @@
 
           <article class="team-card co-owner">
             <div class="team-inner">
+              <p class="tier-tag"><span class="dot" aria-hidden="true"></span>Co-Owner</p>
               <div class="name-row">
                 <h3 class="username">AxoTheDev</h3>
-                <img src="../discotools-xyz-icon%20(4).png" alt="Co-owner icon" class="role-icon">
+                <img src="../discotools-xyz-icon%20(4).png" alt="" class="role-icon">
               </div>
 
               <p class="role">Co-Owner, Designer, Co-Founder</p>
 
               <div class="socials">
-                <a class="social-link" href="https://www.tiktok.com/@axo_the_dev?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" aria-label="AxoTheDev TikTok">
+                <a class="social-link" href="https://www.tiktok.com/@axo_the_dev?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" aria-label="AxoTheDev on TikTok">
                   <img src="../discotools-xyz-icon.png" alt="TikTok">
                 </a>
 
-                <a class="social-link" href="https://youtube.com/@axothedevv?si=slXUEDMM9T7WWhnh" target="_blank" rel="noopener noreferrer" aria-label="AxoTheDev YouTube">
+                <a class="social-link" href="https://youtube.com/@axothedevv?si=slXUEDMM9T7WWhnh" target="_blank" rel="noopener noreferrer" aria-label="AxoTheDev on YouTube">
                   <img src="../discotools-xyz-icon%20(1).png" alt="YouTube">
                 </a>
               </div>
@@ -426,14 +501,18 @@
       </section>
 
       <section class="team-section">
-        <h2 class="section-title">DEVELOPMENT TEAM</h2>
+        <div class="section-head">
+          <h2 class="section-title">Development team</h2>
+          <span class="section-count">— 2</span>
+        </div>
 
         <div class="team-grid">
           <article class="team-card developer">
             <div class="team-inner">
+              <p class="tier-tag"><span class="dot" aria-hidden="true"></span>Developer</p>
               <div class="name-row">
                 <h3 class="username">Vlad</h3>
-                <img src="../discotools-xyz-icon%20(5).png" alt="Developer icon" class="role-icon">
+                <img src="../discotools-xyz-icon%20(5).png" alt="" class="role-icon">
               </div>
 
               <p class="role">Modeler, Developer</p>
@@ -442,15 +521,16 @@
 
           <article class="team-card developer">
             <div class="team-inner">
+              <p class="tier-tag"><span class="dot" aria-hidden="true"></span>Developer</p>
               <div class="name-row">
                 <h3 class="username">Chris</h3>
-                <img src="../discotools-xyz-icon%20(5).png" alt="Developer icon" class="role-icon">
+                <img src="../discotools-xyz-icon%20(5).png" alt="" class="role-icon">
               </div>
 
               <p class="role">Builder, Developer</p>
 
               <div class="socials">
-                <a class="social-link" href="https://www.tiktok.com/@chriszybacon?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" aria-label="Chris TikTok">
+                <a class="social-link" href="https://www.tiktok.com/@chriszybacon?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" aria-label="Chris on TikTok">
                   <img src="../discotools-xyz-icon.png" alt="TikTok">
                 </a>
               </div>
@@ -460,24 +540,28 @@
       </section>
 
       <section class="team-section">
-        <h2 class="section-title">COMMUNITY TEAM</h2>
+        <div class="section-head">
+          <h2 class="section-title">Community team</h2>
+          <span class="section-count">— 2</span>
+        </div>
 
         <div class="team-grid">
           <article class="team-card admin">
             <div class="team-inner">
+              <p class="tier-tag"><span class="dot" aria-hidden="true"></span>Head Admin</p>
               <div class="name-row">
                 <h3 class="username">Marko</h3>
-                <img src="../discotools-xyz-icon%20(6).png" alt="Head Admin icon" class="role-icon">
+                <img src="../discotools-xyz-icon%20(6).png" alt="" class="role-icon">
               </div>
 
               <p class="role">Head Admin</p>
 
               <div class="socials">
-                <a class="social-link" href="https://www.tiktok.com/@marko_jarko1?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" aria-label="Marko TikTok">
+                <a class="social-link" href="https://www.tiktok.com/@marko_jarko1?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" aria-label="Marko on TikTok">
                   <img src="../discotools-xyz-icon.png" alt="TikTok">
                 </a>
 
-                <a class="social-link" href="https://youtube.com/@marko126bobu1?si=DJKDg0y22XsctBd9" target="_blank" rel="noopener noreferrer" aria-label="Marko YouTube">
+                <a class="social-link" href="https://youtube.com/@marko126bobu1?si=DJKDg0y22XsctBd9" target="_blank" rel="noopener noreferrer" aria-label="Marko on YouTube">
                   <img src="../discotools-xyz-icon%20(1).png" alt="YouTube">
                 </a>
               </div>
@@ -486,15 +570,16 @@
 
           <article class="team-card admin">
             <div class="team-inner">
+              <p class="tier-tag"><span class="dot" aria-hidden="true"></span>Senior Moderator</p>
               <div class="name-row">
                 <h3 class="username">Vanica</h3>
-                <img src="../discotools-xyz-icon%20(6).png" alt="Senior Moderator icon" class="role-icon">
+                <img src="../discotools-xyz-icon%20(6).png" alt="" class="role-icon">
               </div>
 
               <p class="role">Senior Moderator</p>
 
               <div class="socials">
-                <a class="social-link" href="https://www.tiktok.com/@vanix_real?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" aria-label="Vanica TikTok">
+                <a class="social-link" href="https://www.tiktok.com/@vanix_real?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" aria-label="Vanica on TikTok">
                   <img src="../discotools-xyz-icon.png" alt="TikTok">
                 </a>
               </div>
@@ -504,20 +589,24 @@
       </section>
 
       <section class="team-section">
-        <h2 class="section-title">TESTER TEAM</h2>
+        <div class="section-head">
+          <h2 class="section-title">Tester team</h2>
+          <span class="section-count">— 2</span>
+        </div>
 
         <div class="team-grid">
           <article class="team-card tester">
             <div class="team-inner">
+              <p class="tier-tag"><span class="dot" aria-hidden="true"></span>Tester</p>
               <div class="name-row">
                 <h3 class="username">Leaks</h3>
-                <img src="../discotools-xyz-icon%20(9).png" alt="Tester icon" class="role-icon">
+                <img src="../discotools-xyz-icon%20(9).png" alt="" class="role-icon">
               </div>
 
               <p class="role">Tester</p>
 
               <div class="socials">
-                <a class="social-link" href="https://www.tiktok.com/@uhleaks8ig?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" aria-label="Leaks TikTok">
+                <a class="social-link" href="https://www.tiktok.com/@uhleaks8ig?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" aria-label="Leaks on TikTok">
                   <img src="../discotools-xyz-icon.png" alt="TikTok">
                 </a>
               </div>
@@ -526,9 +615,10 @@
 
           <article class="team-card tester">
             <div class="team-inner">
+              <p class="tier-tag"><span class="dot" aria-hidden="true"></span>Tester</p>
               <div class="name-row">
                 <h3 class="username">Vitako</h3>
-                <img src="../discotools-xyz-icon%20(9).png" alt="Tester icon" class="role-icon">
+                <img src="../discotools-xyz-icon%20(9).png" alt="" class="role-icon">
               </div>
 
               <p class="role">Tester</p>
