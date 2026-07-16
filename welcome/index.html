@@ -3,28 +3,47 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <title>Welcome - Half & Half Studios</title>
   <link rel="icon" type="image/png" href="../hahslogo.png">
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
   <style>
+    :root {
+      --bg: #34343a;
+      --bg-deep: #121214;
+      --text: #f2f2f2;
+      --text-dim: #98989e;
+      --accent: #1cade7;
+      --accent-dim: rgba(28, 173, 231, 0.22);
+      --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+      --display: "Inter", Arial, Helvetica, sans-serif;
+    }
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
-    html,
-    body {
+    html, body {
       width: 100%;
       height: 100%;
       overflow: hidden;
     }
 
     body {
-      background: #3c3c3c;
-      color: #f2f2f2;
-      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--display);
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 4px;
     }
 
     .hero {
@@ -32,16 +51,52 @@
       width: 100vw;
       height: 100vh;
       min-height: 100svh;
-      background: #3c3c3c;
+      background:
+        radial-gradient(900px 500px at 80% 15%, rgba(28, 173, 231, 0.10), transparent 60%),
+        var(--bg);
       overflow: hidden;
     }
 
     .dark-shape {
       position: absolute;
       inset: 0;
-      background: #141414;
+      background: var(--bg-deep);
       clip-path: polygon(0 0, 100% 0, 0 100%);
+      filter: drop-shadow(0 0 18px rgba(28, 173, 231, 0.28));
       z-index: 1;
+    }
+
+    .status-line {
+      position: absolute;
+      top: clamp(20px, 4vh, 34px);
+      right: clamp(18px, 4vw, 40px);
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: clamp(10px, 1.3vw, 12.5px);
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      opacity: 0;
+      animation: fadeIn 0.7s ease forwards;
+      animation-delay: 1.3s;
+    }
+
+    .status-line .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px 1px var(--accent);
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
     }
 
     .logo-small {
@@ -52,6 +107,10 @@
       z-index: 3;
       user-select: none;
       pointer-events: none;
+      opacity: 0;
+      transform: translateY(-10px);
+      animation: rise 0.7s ease forwards;
+      animation-delay: 0.1s;
     }
 
     .moon {
@@ -63,6 +122,9 @@
       filter: grayscale(100%);
       user-select: none;
       pointer-events: none;
+      opacity: 0;
+      animation: fadeIn 0.9s ease forwards;
+      animation-delay: 0.5s;
     }
 
     .continue-button {
@@ -71,37 +133,64 @@
       bottom: clamp(42px, 12vh, 110px);
       transform: translateX(-50%);
       z-index: 4;
-
-      padding: clamp(6px, 1.2vw, 9px) clamp(14px, 2.5vw, 22px);
-      border: 2px solid #1cade7;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: clamp(9px, 1.4vw, 12px) clamp(20px, 2.8vw, 28px);
+      border: 2px solid var(--accent);
       border-radius: 10px;
       background: transparent;
-      color: #1cade7;
-
-      font-family: Arial, Helvetica, sans-serif;
-      font-size: clamp(16px, 2.1vw, 26px);
+      color: var(--accent);
+      font-family: var(--display);
+      font-size: clamp(15px, 1.9vw, 20px);
       font-weight: 900;
       text-decoration: none;
-      letter-spacing: 1px;
-
+      letter-spacing: 1.5px;
       opacity: 0;
-      animation: fadeInButton 1s ease forwards;
+      animation: fadeIn 0.8s ease forwards;
       animation-delay: 1s;
-      transition: 0.2s ease;
+      transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .continue-button:hover {
-      background: #1cade7;
-      color: #141414;
+    .continue-button::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0.35;
+      transition: opacity 0.2s ease;
+      flex-shrink: 0;
     }
 
-    @keyframes fadeInButton {
-      from {
-        opacity: 0;
-      }
+    .continue-button:hover,
+    .continue-button:focus-visible {
+      background: var(--accent);
+      color: var(--bg-deep);
+      box-shadow: 0 0 26px var(--accent-dim);
+    }
 
-      to {
+    .continue-button:hover::before,
+    .continue-button:focus-visible::before {
+      opacity: 1;
+      background: var(--bg-deep);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(-10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .logo-small, .moon, .continue-button, .status-line {
         opacity: 1;
+        transform: none;
+        animation: none;
       }
     }
 
@@ -109,21 +198,22 @@
       .dark-shape {
         clip-path: polygon(0 0, 100% 0, 0 82%);
       }
-
       .logo-small {
         top: 55px;
         left: 18px;
         width: min(92vw, 420px);
       }
-
       .moon {
         top: 46vh;
         right: -30px;
         width: min(68vw, 280px);
       }
-
       .continue-button {
         bottom: 58px;
+      }
+      .status-line {
+        top: 16px;
+        right: 16px;
       }
     }
 
@@ -133,16 +223,17 @@
         left: 14px;
         width: min(94vw, 350px);
       }
-
       .moon {
         top: 48vh;
         right: -45px;
         width: min(72vw, 245px);
       }
-
       .continue-button {
         bottom: 45px;
         border-radius: 8px;
+      }
+      .status-line span.label {
+        display: none;
       }
     }
 
@@ -151,12 +242,10 @@
         top: 28px;
         width: min(45vw, 460px);
       }
-
       .moon {
         top: 34vh;
         width: min(28vw, 300px);
       }
-
       .continue-button {
         bottom: 28px;
       }
@@ -166,20 +255,20 @@
       .logo-small {
         width: 650px;
       }
-
       .moon {
         width: 430px;
       }
     }
   </style>
 </head>
-
 <body>
   <section class="hero">
-    <div class="dark-shape"></div>
+    <div class="dark-shape" aria-hidden="true"></div>
 
-    <img src="../hahsbanner.png" alt="Half & Half Studios logo" class="logo-small" />
-    <img src="../hahslogo.png" alt="Moon logo" class="moon" />
+    <p class="status-line"><span class="dot" aria-hidden="true"></span><span class="label">Site online</span></p>
+
+    <img src="../hahsbanner.png" alt="Half & Half Studios" class="logo-small" />
+    <img src="../hahslogo.png" alt="" class="moon" aria-hidden="true" />
 
     <a href="../homepage/" class="continue-button">CONTINUE</a>
   </section>
