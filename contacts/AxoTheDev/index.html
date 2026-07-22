@@ -1,1 +1,474 @@
-coming soon
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>AxoTheDev - Half & Half Studios</title>
+  <link rel="icon" type="image/png" href="../../hahslogo.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #34343a;
+      --bg-deep: #121214;
+      --panel: #131315;
+      --panel-line: rgba(242, 242, 242, 0.07);
+      --text: #f2f2f2;
+      --text-dim: #98989e;
+      --accent: #1cade7;
+      --accent-dim: rgba(28, 173, 231, 0.22);
+      --tier: #e92b55;
+      --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+      --display: "Inter", Arial, Helvetica, sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100%;
+    }
+
+    body {
+      background:
+        radial-gradient(1200px 600px at 85% -10%, rgba(28, 173, 231, 0.08), transparent 60%),
+        var(--bg);
+      color: var(--text);
+      font-family: var(--display);
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      background: transparent;
+    }
+
+    /* ---------- Sidebar ---------- */
+
+    .sidebar {
+      width: 191px;
+      min-height: 100vh;
+      background: var(--bg-deep);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 8px;
+      flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      align-self: flex-start;
+      border-right: 1px solid var(--panel-line);
+    }
+
+    .sidebar::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: -1px;
+      width: 1px;
+      height: 100%;
+      background: linear-gradient(180deg, transparent, var(--accent-dim), transparent);
+    }
+
+    .sidebar-logo {
+      width: 180px;
+      margin-bottom: 18px;
+    }
+
+    .back-button {
+      width: 162px;
+      height: 41px;
+      border: 3px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      background: transparent;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      line-height: 1;
+      transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .back-button::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0.35;
+      transition: opacity 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .back-button:hover,
+    .back-button:focus-visible {
+      background: var(--accent);
+      color: var(--bg-deep);
+      box-shadow: 0 0 22px var(--accent-dim);
+    }
+
+    .back-button:hover::before,
+    .back-button:focus-visible::before {
+      opacity: 1;
+      background: var(--bg-deep);
+    }
+
+    /* ---------- Content ---------- */
+
+    .content {
+      flex: 1;
+      min-height: 100vh;
+      padding: 56px 40px 70px 48px;
+    }
+
+    .profile-container {
+      max-width: 780px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      font-family: var(--mono);
+      font-size: 12.5px;
+      font-weight: 500;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
+
+    .eyebrow .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px 1px var(--accent);
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
+    }
+
+    .title {
+      font-size: clamp(38px, 4.6vw, 56px);
+      font-weight: 900;
+      color: var(--text);
+      letter-spacing: 0.5px;
+      line-height: 1.02;
+      margin-bottom: 12px;
+    }
+
+    .tier-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      color: var(--tier);
+      margin-bottom: 46px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid var(--panel-line);
+    }
+
+    .tier-tag .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--tier);
+      box-shadow: 0 0 8px 1px var(--tier);
+      flex-shrink: 0;
+    }
+
+    .tier-tag .role-line {
+      color: var(--text-dim);
+      font-weight: 400;
+      text-transform: none;
+      letter-spacing: 0.2px;
+    }
+
+    /* ---------- Sections ---------- */
+
+    section {
+      margin-bottom: 40px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 14px;
+      font-family: var(--mono);
+    }
+
+    /* Placeholder bio card — dashed border marks it as provisional */
+    .bio-card {
+      background: var(--panel);
+      border: 1px dashed rgba(242, 242, 242, 0.18);
+      border-radius: 10px;
+      padding: 24px 26px 26px;
+    }
+
+    .placeholder-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 14px;
+    }
+
+    .placeholder-tag .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: transparent;
+      border: 1.5px solid var(--text-dim);
+      flex-shrink: 0;
+    }
+
+    .bio-card p.bio-text {
+      font-size: 15.5px;
+      font-weight: 400;
+      line-height: 1.65;
+      color: #b4b4b4;
+      font-style: italic;
+      max-width: 620px;
+    }
+
+    /* ---------- Socials grid ---------- */
+
+    .socials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 200px));
+      gap: 18px;
+    }
+
+    .social-card {
+      position: relative;
+      background: var(--panel);
+      border: 1px solid var(--panel-line);
+      border-radius: 12px;
+      padding: 20px 16px 18px;
+      min-height: 170px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      text-align: center;
+      text-decoration: none;
+      color: var(--text);
+      transition: transform 0.18s ease, border-color 0.18s ease;
+    }
+
+    .social-card:hover,
+    .social-card:focus-visible {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+      box-shadow: 0 0 22px var(--accent-dim);
+    }
+
+    .social-card img {
+      width: 68px;
+      height: 68px;
+      object-fit: contain;
+      margin-bottom: 14px;
+      opacity: 0.95;
+    }
+
+    .social-card h3 {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+    }
+
+    .social-card p {
+      font-size: 12.5px;
+      font-weight: 400;
+      color: var(--text-dim);
+      margin-top: 4px;
+    }
+
+    /* ---------- Footer ---------- */
+
+    .copyright {
+      position: fixed;
+      left: 191px;
+      right: 0;
+      bottom: 0;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-dim);
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.3px;
+      z-index: 5;
+      background: linear-gradient(0deg, rgba(20,20,20,0.9), transparent);
+    }
+
+    @media (max-width: 800px) {
+      .page {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        min-height: auto;
+        padding: 10px 12px;
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 12px;
+        overflow-x: auto;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        border-right: none;
+        border-bottom: 1px solid var(--panel-line);
+      }
+
+      .sidebar::after { display: none; }
+
+      .sidebar-logo {
+        width: 120px;
+        margin-bottom: 0;
+        flex-shrink: 0;
+      }
+
+      .back-button {
+        width: auto;
+        min-width: 120px;
+        height: 36px;
+        padding: 0 14px;
+        font-size: 18px;
+        border-width: 2px;
+      }
+
+      .content {
+        min-height: calc(100vh - 76px);
+        padding: 26px 20px 70px;
+      }
+
+      .bio-card { padding: 20px 18px 22px; }
+
+      .socials-grid {
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 14px;
+      }
+
+      .copyright {
+        left: 0;
+        font-size: 11px;
+        padding: 0 10px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .sidebar-logo { width: 100px; }
+
+      .back-button {
+        min-width: 98px;
+        height: 32px;
+        font-size: 15px;
+      }
+
+      .title { font-size: 34px; }
+
+      .social-card {
+        min-height: 150px;
+        padding: 16px 12px 14px;
+      }
+
+      .social-card img { width: 56px; height: 56px; }
+
+      .copyright { font-size: 11px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <aside class="sidebar">
+      <img src="../../hahslogo.png" alt="Half & Half Studios logo" class="sidebar-logo">
+      <a href="../../our-team/" class="back-button">BACK</a>
+    </aside>
+
+    <main class="content">
+      <div class="profile-container">
+        <p class="eyebrow"><span class="dot" aria-hidden="true"></span>Contact</p>
+        <h1 class="title">AxoTheDev</h1>
+        <p class="tier-tag"><span class="dot" aria-hidden="true"></span>Co-Owner<span class="role-line">&nbsp;— Designer, Co-Founder</span></p>
+
+        <section>
+          <p class="section-title">About</p>
+          <div class="bio-card">
+            <p class="placeholder-tag"><span class="dot" aria-hidden="true"></span>Placeholder — replace with your own bio</p>
+            <p class="bio-text">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            </p>
+          </div>
+        </section>
+
+        <section>
+          <p class="section-title">Socials</p>
+          <div class="socials-grid">
+            <a class="social-card" href="https://www.tiktok.com/@axo_the_dev?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer">
+              <img src="../../discotools-xyz-icon.png" alt="AxoTheDev TikTok">
+              <div>
+                <h3>TikTok</h3>
+                <p>@axo_the_dev</p>
+              </div>
+            </a>
+
+            <a class="social-card" href="https://youtube.com/@axothedevv?si=slXUEDMM9T7WWhnh" target="_blank" rel="noopener noreferrer">
+              <img src="../../discotools-xyz-icon%20(1).png" alt="AxoTheDev YouTube">
+              <div>
+                <h3>YouTube</h3>
+                <p>@axothedevv</p>
+              </div>
+            </a>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <footer class="copyright">
+    © 2026 Half &amp; Half Studios. All rights reserved.
+  </footer>
+</body>
+</html>
