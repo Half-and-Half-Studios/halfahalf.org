@@ -322,6 +322,95 @@
       margin-top: 4px;
     }
 
+    /* ---------- Direct contact list ---------- */
+
+    .contact-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .contact-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      background: var(--panel);
+      border: 1px solid var(--panel-line);
+      border-radius: 10px;
+      padding: 16px 18px;
+      flex-wrap: wrap;
+      transition: border-color 0.15s ease;
+    }
+
+    .contact-row:hover {
+      border-color: rgba(28, 173, 231, 0.3);
+    }
+
+    .contact-info {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .contact-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .contact-value {
+      font-family: var(--mono);
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--text);
+      word-break: break-all;
+    }
+
+    .contact-value a {
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .contact-value a:hover {
+      text-decoration: underline;
+      color: var(--accent);
+    }
+
+    .copy-button {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      background: transparent;
+      border: 1px solid var(--panel-line);
+      border-radius: 7px;
+      padding: 8px 14px;
+      cursor: pointer;
+      transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+    }
+
+    .copy-button:hover,
+    .copy-button:focus-visible {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(28, 173, 231, 0.06);
+    }
+
+    .copy-button.copied {
+      border-color: #35d62b;
+      color: #35d62b;
+    }
+
     /* ---------- Footer ---------- */
 
     .copyright {
@@ -444,6 +533,27 @@
         </section>
 
         <section>
+          <p class="section-title">Direct</p>
+          <div class="contact-list">
+            <div class="contact-row">
+              <div class="contact-info">
+                <span class="contact-label">Email</span>
+                <span class="contact-value"><a href="mailto:axoloch157@gmail.com">axoloch157@gmail.com</a></span>
+              </div>
+              <button class="copy-button" type="button" data-copy="axoloch157@gmail.com">Copy</button>
+            </div>
+
+            <div class="contact-row">
+              <div class="contact-info">
+                <span class="contact-label">Discord</span>
+                <span class="contact-value">axothedev</span>
+              </div>
+              <button class="copy-button" type="button" data-copy="axothedev">Copy</button>
+            </div>
+          </div>
+        </section>
+
+        <section>
           <p class="section-title">Socials</p>
           <div class="socials-grid">
             <a class="social-card" href="https://www.tiktok.com/@axo_the_dev?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer">
@@ -470,5 +580,22 @@
   <footer class="copyright">
     © 2026 Half &amp; Half Studios. All rights reserved.
   </footer>
+
+  <script>
+    document.querySelectorAll('.copy-button').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var value = btn.getAttribute('data-copy');
+        var original = btn.textContent;
+        navigator.clipboard.writeText(value).then(function () {
+          btn.textContent = 'Copied';
+          btn.classList.add('copied');
+          setTimeout(function () {
+            btn.textContent = original;
+            btn.classList.remove('copied');
+          }, 1500);
+        });
+      });
+    });
+  </script>
 </body>
 </html>
