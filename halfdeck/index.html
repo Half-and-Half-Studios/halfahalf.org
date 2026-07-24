@@ -40,6 +40,7 @@
   }
 
   a{ color: inherit; }
+  button{ font-family: inherit; cursor: pointer; }
 
   /* ---------- HERO ---------- */
   .hero{
@@ -89,19 +90,54 @@
     color: transparent;
   }
 
-  .hero .sub{
+  .hero .variant-tagline{
     z-index: 1;
     margin-top: 1.2rem;
     font-size: clamp(1rem, 2vw, 1.15rem);
     color: rgba(244,244,244,0.65);
-    max-width: 32ch;
+    max-width: 34ch;
+    min-height: 3.2em;
+  }
+
+  /* ---------- VARIANT SELECTOR ---------- */
+  .variant-selector{
+    z-index: 1;
+    display: inline-flex;
+    gap: 0.25rem;
+    margin-top: 2.2rem;
+    padding: 0.3rem;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 999px;
+    backdrop-filter: blur(6px);
+  }
+
+  .variant-btn{
+    border: none;
+    background: transparent;
+    color: rgba(244,244,244,0.6);
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 0.65rem 1.3rem;
+    border-radius: 999px;
+    transition: background 0.2s ease, color 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .variant-btn.active{
+    background: var(--accent);
+    color: #0d0d0d;
+  }
+
+  .variant-btn:not(.active):hover{
+    color: var(--white);
+    background: rgba(255,255,255,0.08);
   }
 
   .device-wrap{
     z-index: 1;
-    margin-top: 3.2rem;
+    margin-top: 2.6rem;
     filter: drop-shadow(0 30px 60px rgba(0,0,0,0.55));
-    animation: rise 1.1s cubic-bezier(.2,.8,.2,1) both;
   }
 
   .device-photo{
@@ -110,11 +146,12 @@
     width: 100%;
     height: auto;
     border-radius: 18px;
-    background: #1a1a1a; /* shows as a soft placeholder card until halfdeck.png exists */
+    background: #1a1a1a; /* placeholder card until each variant's photo exists */
+    animation: rise 0.6s cubic-bezier(.2,.8,.2,1) both;
   }
 
   @keyframes rise{
-    from{ opacity:0; transform: translateY(28px); }
+    from{ opacity:0; transform: translateY(16px); }
     to{ opacity:1; transform: translateY(0); }
   }
 
@@ -186,13 +223,14 @@
   .spec-list li{
     display:flex;
     justify-content: space-between;
+    gap: 1rem;
     padding: 1rem 0;
     border-bottom: 1px solid rgba(244,244,244,0.14);
     font-size: 0.92rem;
   }
 
-  .spec-list li span:first-child{ color: rgba(244,244,244,0.5); }
-  .spec-list li span:last-child{ font-weight: 600; }
+  .spec-list li span:first-child{ color: rgba(244,244,244,0.5); flex-shrink: 0; }
+  .spec-list li span:last-child{ font-weight: 600; text-align: right; }
 
   @media (max-width: 760px){
     .desc-grid{ grid-template-columns: 1fr; }
@@ -218,6 +256,13 @@
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: rgba(244,244,244,0.5);
+  }
+
+  .price-card .variant-name{
+    margin-top: 0.6rem;
+    font-weight: 700;
+    color: rgba(244,244,244,0.85);
+    font-size: 1rem;
   }
 
   .price-card .amount{
@@ -269,11 +314,17 @@
 <section class="hero">
   <span class="eyebrow">Half &amp; Half Studios</span>
   <h1>HALFDECK</h1>
-  <p class="sub">A control surface built for the exact moment you need one hand to do six jobs at once.</p>
+  <p class="variant-tagline" id="variantTagline"></p>
+
+  <div class="variant-selector" role="tablist" aria-label="Choose a HalfDeck model">
+    <button class="variant-btn active" data-variant="mini" role="tab" aria-selected="true">HalfDeck 1 Mini</button>
+    <button class="variant-btn" data-variant="standard" role="tab" aria-selected="false">HalfDeck 1</button>
+    <button class="variant-btn" data-variant="pro" role="tab" aria-selected="false">HalfDeck 1 PRO</button>
+  </div>
 
   <div class="device-wrap">
-    <!-- Product photo: drop halfdeck.png in the same folder as this page -->
-    <img src="halfdeck.png" alt="The HalfDeck controller: six keys, three rotary knobs, and a slide fader, in black and white" class="device-photo">
+    <!-- Product photo: drop each variant's PNG in the same folder as this page -->
+    <img id="variantPhoto" src="halfdeck-mini.png" alt="" class="device-photo">
   </div>
 
   <div class="scroll-cue">
@@ -286,19 +337,12 @@
   <span class="label">Overview</span>
   <div class="desc-grid">
     <div>
-      <h2>Built for the hand that's always busy.</h2>
+      <h2 id="descHeading">Built for the hand that's always busy.</h2>
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
       <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
       <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
     </div>
-    <ul class="spec-list">
-      <li><span>Keys</span><span>6 × hot-swap, silent linear</span></li>
-      <li><span>Knobs</span><span>3 × rotary potentiometer</span></li>
-      <li><span>Fader</span><span>1 × slide fader</span></li>
-      <li><span>Lighting</span><span>44 × indicator LEDs</span></li>
-      <li><span>Connection</span><span>USB-C</span></li>
-      <li><span>Finish</span><span>Black / White</span></li>
-    </ul>
+    <ul class="spec-list" id="specList"></ul>
   </div>
 </section>
 
@@ -306,13 +350,104 @@
   <span class="label">Pricing</span>
   <div class="price-card">
     <div class="from">Starting at</div>
-    <div class="amount">$unknown</div>
+    <div class="variant-name" id="priceVariantName"></div>
+    <div class="amount" id="priceAmount"></div>
     <p>Every HalfDeck is hand-built to order. Placeholder price — swap in the real number when it's locked.</p>
-    <a class="cta" href="#">Notify me at launch</a>
+    <a class="cta" href="#" id="notifyCta">Notify me at launch</a>
   </div>
 </section>
 
 <footer>© Half &amp; Half Studios · HalfDeck</footer>
+
+<script>
+  const variants = {
+    mini: {
+      label: "HalfDeck 1 Mini",
+      tagline: "The compact control surface that started it all — six keys, three knobs, one fader.",
+      photo: "halfdeck-mini.png",
+      alt: "The HalfDeck 1 Mini controller: six keys, three rotary knobs, and a slide fader, in black and white",
+      heading: "Built for the hand that's always busy.",
+      price: "$149",
+      specs: [
+        ["Keys", "6 × hot-swap, silent linear"],
+        ["Knobs", "3 × rotary potentiometer"],
+        ["Fader", "1 × slide fader"],
+        ["Lighting", "3mm / 5mm alternating LEDs"],
+        ["Display", "—"],
+        ["Connection", "USB-C, bus powered"],
+        ["Finish", "Black / White"]
+      ]
+    },
+    standard: {
+      label: "HalfDeck 1",
+      tagline: "The full-size deck for setups that have outgrown Mini. Specs locking in soon.",
+      photo: "halfdeck-1.png",
+      alt: "The HalfDeck 1 controller, full-size, in black and white",
+      heading: "More surface, same control.",
+      price: "$199",
+      specs: [
+        ["Keys", "TBD"],
+        ["Knobs", "3 × rotary potentiometer"],
+        ["Fader", "1 × slide fader"],
+        ["Lighting", "3mm / 5mm alternating LEDs"],
+        ["Display", "—"],
+        ["Connection", "USB-C, bus powered"],
+        ["Finish", "Black / White"]
+      ]
+    },
+    pro: {
+      label: "HalfDeck 1 PRO",
+      tagline: "Everything in HalfDeck 1, plus a display so every key shows its own icon.",
+      photo: "halfdeck-1-pro.png",
+      alt: "The HalfDeck 1 PRO controller with per-key icon display, in black and white",
+      heading: "See what every key does.",
+      price: "$249",
+      specs: [
+        ["Keys", "6 × Silent keys"],
+        ["Knobs", "4 × rotary potentiometer"],
+        ["Fader", "2 × slide fader"],
+        ["Lighting", "3mm / 5mm alternating LEDs"],
+        ["Display", "1 ×  Oled display + SD card"],
+        ["Connection", "USB-C, bus powered"],
+        ["Finish", "Black / White"]
+        ["Colors", "Black / White / Red"]
+      ]
+    }
+  };
+
+  const tagline = document.getElementById('variantTagline');
+  const photo = document.getElementById('variantPhoto');
+  const heading = document.getElementById('descHeading');
+  const specList = document.getElementById('specList');
+  const priceVariantName = document.getElementById('priceVariantName');
+  const priceAmount = document.getElementById('priceAmount');
+  const buttons = document.querySelectorAll('.variant-btn');
+
+  function renderVariant(key){
+    const v = variants[key];
+    tagline.textContent = v.tagline;
+    photo.src = v.photo;
+    photo.alt = v.alt;
+    heading.textContent = v.heading;
+    priceVariantName.textContent = v.label;
+    priceAmount.textContent = v.price;
+    specList.innerHTML = v.specs.map(([k, val]) =>
+      `<li><span>${k}</span><span>${val}</span></li>`
+    ).join('');
+
+    buttons.forEach(btn => {
+      const isActive = btn.dataset.variant === key;
+      btn.classList.toggle('active', isActive);
+      btn.setAttribute('aria-selected', isActive);
+    });
+  }
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => renderVariant(btn.dataset.variant));
+  });
+
+  renderVariant('mini');
+</script>
 
 </body>
 </html>
