@@ -17,6 +17,7 @@
       --accent-dim: rgba(28, 173, 231, 0.25);
       --idle: #4a4a52;
       --live: #35d62b;
+      --live-dim: rgba(53, 214, 43, 0.25);
       --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
       --display: "Inter", Arial, Helvetica, sans-serif;
     }
@@ -34,59 +35,153 @@
     }
 
     /*
-      Transparent by default so this works as an OBS/streaming
-      browser-source overlay. If you're previewing it in a regular
-      browser tab and want a solid backdrop, change "transparent"
-      below to var(--bg-preview).
+      Solid backdrop by default so the animated background actually
+      reads. If you're using this as a transparent OBS/browser-source
+      overlay instead, change --bg-mode below to "transparent".
     */
     body {
-      --bg-preview: #34343a;
-      background: transparent;
+      --bg-mode: #17171a;
+      background: var(--bg-mode);
       color: var(--text);
       font-family: var(--display);
+      position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
+    canvas#bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      display: block;
+    }
+
+    /* Drifting glow blobs for depth, behind the particle network */
+    .glow {
+      position: fixed;
+      z-index: 0;
+      border-radius: 50%;
+      filter: blur(90px);
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+
+    .glow-a {
+      width: 46vw;
+      height: 46vw;
+      background: radial-gradient(circle, rgba(28, 173, 231, 0.20), transparent 70%);
+      top: -10%;
+      left: -8%;
+      animation: driftA 22s ease-in-out infinite;
+    }
+
+    .glow-b {
+      width: 38vw;
+      height: 38vw;
+      background: radial-gradient(circle, rgba(231, 138, 28, 0.08), transparent 70%);
+      bottom: -12%;
+      right: -6%;
+      animation: driftB 28s ease-in-out infinite;
+    }
+
+    @keyframes driftA {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(6vw, 8vh) scale(1.15); }
+    }
+
+    @keyframes driftB {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(-5vw, -6vh) scale(1.1); }
+    }
+
+    /* Faint scanning grid, very subtle */
+    .grid {
+      position: fixed;
+      inset: -2px;
+      z-index: 0;
+      background-image:
+        linear-gradient(rgba(242, 242, 242, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(242, 242, 242, 0.035) 1px, transparent 1px);
+      background-size: 46px 46px;
+      animation: gridDrift 60s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes gridDrift {
+      from { background-position: 0 0, 0 0; }
+      to   { background-position: 460px 0, 0 460px; }
+    }
+
+    .vignette {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background: radial-gradient(120% 90% at 50% 50%, transparent 45%, rgba(10, 10, 12, 0.55) 100%);
+    }
+
+    /* ---------- Content rig ---------- */
+
     .rig {
+      position: relative;
+      z-index: 2;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 22px;
+      gap: 24px;
       user-select: none;
     }
 
-    .prompt {
+    .label {
       display: flex;
       align-items: center;
       gap: 10px;
       font-family: var(--mono);
-      font-size: clamp(13px, 1.6vw, 18px);
+      font-size: clamp(13px, 1.6vw, 19px);
       font-weight: 500;
       letter-spacing: 3px;
       text-transform: uppercase;
-      color: var(--text-dim);
-      transition: opacity 0.4s ease;
+      transition: color 0.5s ease, opacity 0.4s ease;
     }
 
-    .prompt .dot {
+    .label .dot {
       width: 8px;
       height: 8px;
       border-radius: 50%;
+      transition: background 0.5s ease, box-shadow 0.5s ease;
+    }
+
+    .label.state-idle {
+      color: var(--text-dim);
+    }
+    .label.state-idle .dot {
       background: var(--accent);
       box-shadow: 0 0 10px 2px var(--accent);
       animation: pulse 1.6s ease-in-out infinite;
     }
 
+    .label.state-running {
+      color: var(--accent);
+    }
+    .label.state-running .dot {
+      background: var(--accent);
+      box-shadow: 0 0 12px 2px var(--accent);
+      animation: pulse 1s ease-in-out infinite;
+    }
+
+    .label.state-done {
+      color: var(--live);
+    }
+    .label.state-done .dot {
+      background: var(--live);
+      box-shadow: 0 0 14px 3px var(--live);
+      animation: pulse 0.7s ease-in-out infinite;
+    }
+
     @keyframes pulse {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.3; }
-    }
-
-    .prompt.hidden {
-      opacity: 0;
-      pointer-events: none;
     }
 
     .clock {
@@ -103,12 +198,16 @@
 
     .clock.running {
       color: var(--accent);
-      text-shadow: 0 0 30px var(--accent-dim), 0 0 70px var(--accent-dim);
+      text-shadow: 0 0 30px var(--accent-dim), 0 0 80px var(--accent-dim);
+    }
+
+    .clock.done {
+      color: var(--live);
+      text-shadow: 0 0 30px var(--live-dim), 0 0 90px var(--live-dim);
     }
 
     .clock .colon {
       display: inline-block;
-      animation: none;
     }
 
     .clock.running .colon {
@@ -120,53 +219,82 @@
       50%, 100% { opacity: 0.15; }
     }
 
-    .clock.done {
-      color: var(--live);
-      text-shadow: 0 0 30px rgba(53, 214, 43, 0.35), 0 0 80px rgba(53, 214, 43, 0.25);
-      animation: flash 0.9s ease-in-out 3;
+    /* Per-second tick pulse */
+    .clock.tick {
+      animation: tickPulse 0.35s ease-out;
     }
 
-    @keyframes flash {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
+    @keyframes tickPulse {
+      0%   { transform: scale(1); }
+      30%  { transform: scale(1.035); }
+      100% { transform: scale(1); }
     }
 
-    .status {
-      font-family: var(--mono);
-      font-size: clamp(12px, 1.4vw, 16px);
-      font-weight: 500;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--live);
+    /* Completion burst */
+    .clock.burst {
+      animation: burstFlash 0.8s ease-in-out 3;
+    }
+
+    @keyframes burstFlash {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.45; transform: scale(1.05); }
+    }
+
+    .shockwave {
+      position: fixed;
+      z-index: 1;
+      top: 50%;
+      left: 50%;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 2px solid var(--live);
+      transform: translate(-50%, -50%);
       opacity: 0;
-      transition: opacity 0.4s ease;
+      pointer-events: none;
     }
 
-    .status.show {
-      opacity: 1;
+    .shockwave.fire {
+      animation: expand 1.4s ease-out;
+    }
+
+    @keyframes expand {
+      0%   { width: 10px; height: 10px; opacity: 0.9; border-width: 3px; }
+      100% { width: 140vmax; height: 140vmax; opacity: 0; border-width: 1px; }
     }
   </style>
 </head>
 
 <body>
+  <canvas id="bg"></canvas>
+  <div class="glow glow-a"></div>
+  <div class="glow glow-b"></div>
+  <div class="grid"></div>
+  <div class="vignette"></div>
+  <div class="shockwave" id="shockwave"></div>
+
   <div class="rig">
-    <p class="prompt" id="prompt"><span class="dot" aria-hidden="true"></span><span>Press space to start</span></p>
+    <p class="label state-idle" id="label">
+      <span class="dot" aria-hidden="true"></span>
+      <span id="labelText">Press space to start</span>
+    </p>
     <div class="clock" id="clock" aria-live="polite">05:00</div>
-    <p class="status" id="status">Live</p>
   </div>
 
   <script>
-    // ---- Configuration ----
+    // ============ Configuration ============
     // Change this to whatever countdown length you need, in seconds.
     const DURATION_SECONDS = 5 * 60; // 5:00
 
+    // ============ Countdown logic ============
     let remaining = DURATION_SECONDS;
     let started = false;
     let intervalId = null;
 
     const clockEl = document.getElementById('clock');
-    const promptEl = document.getElementById('prompt');
-    const statusEl = document.getElementById('status');
+    const labelEl = document.getElementById('label');
+    const labelTextEl = document.getElementById('labelText');
+    const shockwaveEl = document.getElementById('shockwave');
 
     function format(totalSeconds) {
       const s = Math.max(0, totalSeconds);
@@ -179,9 +307,16 @@
       clockEl.innerHTML = format(remaining);
     }
 
+    function pulseTick() {
+      clockEl.classList.remove('tick');
+      void clockEl.offsetWidth; // restart animation
+      clockEl.classList.add('tick');
+    }
+
     function tick() {
       remaining -= 1;
       render();
+      pulseTick();
       if (remaining <= 0) {
         clearInterval(intervalId);
         onComplete();
@@ -191,15 +326,28 @@
     function start() {
       if (started) return;
       started = true;
-      promptEl.classList.add('hidden');
+      networkPhase = 'running';
+
+      labelEl.classList.remove('state-idle');
+      labelEl.classList.add('state-running');
+      labelTextEl.textContent = 'Stream starting in';
+
       clockEl.classList.add('running');
       intervalId = setInterval(tick, 1000);
     }
 
     function onComplete() {
+      networkPhase = 'done';
+
+      labelEl.classList.remove('state-running');
+      labelEl.classList.add('state-done');
+      labelTextEl.textContent = "We're live";
+
       clockEl.classList.remove('running');
-      clockEl.classList.add('done');
-      statusEl.classList.add('show');
+      clockEl.classList.add('done', 'burst');
+
+      shockwaveEl.classList.add('fire');
+      spawnBurstPulses();
     }
 
     render();
@@ -210,6 +358,139 @@
         start();
       }
     });
+
+    // ============ Animated circuit-network background ============
+    const canvas = document.getElementById('bg');
+    const ctx = canvas.getContext('2d');
+    let W, H, DPR;
+    let nodes = [];
+    let pulses = [];
+    let networkPhase = 'idle'; // idle | running | done
+
+    const PALETTE = {
+      idle:    { r: 120, g: 128, b: 138 },
+      running: { r: 28,  g: 173, b: 231 },
+      done:    { r: 53,  g: 214, b: 43  }
+    };
+
+    function resize() {
+      DPR = Math.min(window.devicePixelRatio || 1, 2);
+      W = window.innerWidth;
+      H = window.innerHeight;
+      canvas.width = W * DPR;
+      canvas.height = H * DPR;
+      canvas.style.width = W + 'px';
+      canvas.style.height = H + 'px';
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      initNodes();
+    }
+
+    function initNodes() {
+      const count = Math.max(28, Math.min(85, Math.floor((W * H) / 22000)));
+      nodes = new Array(count).fill(0).map(() => ({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        vx: (Math.random() - 0.5) * 0.18,
+        vy: (Math.random() - 0.5) * 0.18,
+        r: 1.2 + Math.random() * 1.6
+      }));
+    }
+
+    function maybeSpawnPulse() {
+      const chance = networkPhase === 'idle' ? 0.01 : networkPhase === 'running' ? 0.035 : 0.06;
+      if (Math.random() > chance) return;
+      if (nodes.length < 2) return;
+      const a = nodes[Math.floor(Math.random() * nodes.length)];
+      let closest = null, closestD = Infinity;
+      for (const n of nodes) {
+        if (n === a) continue;
+        const d = Math.hypot(n.x - a.x, n.y - a.y);
+        if (d < closestD && d < 220) { closestD = d; closest = n; }
+      }
+      if (!closest) return;
+      pulses.push({ a, b: closest, t: 0, speed: 0.02 + Math.random() * 0.015 });
+    }
+
+    function spawnBurstPulses() {
+      // Radiate a wave of pulses outward from the network on completion
+      for (let i = 0; i < 18; i++) {
+        setTimeout(maybeForcedPulse, i * 40);
+      }
+    }
+
+    function maybeForcedPulse() {
+      if (nodes.length < 2) return;
+      const a = nodes[Math.floor(Math.random() * nodes.length)];
+      const b = nodes[Math.floor(Math.random() * nodes.length)];
+      if (a === b) return;
+      pulses.push({ a, b, t: 0, speed: 0.03 + Math.random() * 0.02 });
+    }
+
+    function step() {
+      const speedMul = networkPhase === 'idle' ? 1 : networkPhase === 'running' ? 1.6 : 2.2;
+      const c = PALETTE[networkPhase];
+
+      ctx.clearRect(0, 0, W, H);
+
+      // Update positions
+      const maxDist = 150;
+      for (const n of nodes) {
+        n.x += n.vx * speedMul;
+        n.y += n.vy * speedMul;
+        if (n.x < 0 || n.x > W) n.vx *= -1;
+        if (n.y < 0 || n.y > H) n.vy *= -1;
+      }
+
+      // Draw connections
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const a = nodes[i], b = nodes[j];
+          const d = Math.hypot(a.x - b.x, a.y - b.y);
+          if (d < maxDist) {
+            const alpha = (1 - d / maxDist) * 0.18;
+            ctx.strokeStyle = `rgba(${c.r}, ${c.g}, ${c.b}, ${alpha})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Draw nodes
+      for (const n of nodes) {
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(${c.r}, ${c.g}, ${c.b}, 0.55)`;
+        ctx.shadowColor = `rgba(${c.r}, ${c.g}, ${c.b}, 0.8)`;
+        ctx.shadowBlur = 6;
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.shadowBlur = 0;
+
+      // Traveling signal pulses along edges
+      maybeSpawnPulse();
+      pulses = pulses.filter(p => p.t < 1);
+      for (const p of pulses) {
+        p.t += p.speed;
+        const x = p.a.x + (p.b.x - p.a.x) * p.t;
+        const y = p.a.y + (p.b.y - p.a.y) * p.t;
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(${c.r}, ${c.g}, ${c.b}, ${0.9 * (1 - p.t)})`;
+        ctx.shadowColor = `rgba(${c.r}, ${c.g}, ${c.b}, 1)`;
+        ctx.shadowBlur = 10;
+        ctx.arc(x, y, 2.2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+
+      requestAnimationFrame(step);
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+    requestAnimationFrame(step);
   </script>
 </body>
 </html>
