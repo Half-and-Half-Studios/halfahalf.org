@@ -11,12 +11,18 @@
 
   <style>
     :root {
+      --bg: #34343a;
+      --bg-deep: #121214;
+      --panel: #131315;
+      --panel-line: rgba(242, 242, 242, 0.07);
       --text: #f2f2f2;
       --text-dim: #98989e;
       --accent: #1cade7;
-      --accent-dim: rgba(28, 173, 231, 0.25);
-      --idle: #4a4a52;
+      --accent-dim: rgba(28, 173, 231, 0.22);
+      --idle-rgb: 152, 152, 158;
+      --accent-rgb: 28, 173, 231;
       --live: #35d62b;
+      --live-rgb: 53, 214, 43;
       --live-dim: rgba(53, 214, 43, 0.25);
       --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
       --display: "Inter", Arial, Helvetica, sans-serif;
@@ -34,14 +40,10 @@
       overflow: hidden;
     }
 
-    /*
-      Solid backdrop by default so the animated background actually
-      reads. If you're using this as a transparent OBS/browser-source
-      overlay instead, change --bg-mode below to "transparent".
-    */
     body {
-      --bg-mode: #17171a;
-      background: var(--bg-mode);
+      background:
+        radial-gradient(1200px 600px at 85% -10%, rgba(28, 173, 231, 0.10), transparent 60%),
+        var(--bg);
       color: var(--text);
       font-family: var(--display);
       position: relative;
@@ -79,7 +81,7 @@
     .glow-b {
       width: 38vw;
       height: 38vw;
-      background: radial-gradient(circle, rgba(231, 138, 28, 0.08), transparent 70%);
+      background: radial-gradient(circle, rgba(231, 138, 28, 0.06), transparent 70%);
       bottom: -12%;
       right: -6%;
       animation: driftB 28s ease-in-out infinite;
@@ -118,7 +120,56 @@
       inset: 0;
       z-index: 1;
       pointer-events: none;
-      background: radial-gradient(120% 90% at 50% 50%, transparent 45%, rgba(10, 10, 12, 0.55) 100%);
+      background: radial-gradient(120% 90% at 50% 50%, transparent 45%, rgba(10, 10, 12, 0.5) 100%);
+    }
+
+    /* ---------- Deck-button LED rack (corner accent) ---------- */
+
+    .deck {
+      position: fixed;
+      z-index: 2;
+      left: clamp(20px, 3vw, 40px);
+      bottom: clamp(20px, 3vw, 40px);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .deck-key {
+      width: clamp(12px, 1.4vw, 18px);
+      height: clamp(12px, 1.4vw, 18px);
+      border-radius: 4px;
+      background: var(--panel);
+      border: 1px solid var(--panel-line);
+      transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .deck.state-idle .deck-key.lit {
+      background: rgba(var(--idle-rgb), 0.5);
+      border-color: rgba(var(--idle-rgb), 0.6);
+    }
+
+    .deck.state-running .deck-key.lit {
+      background: var(--accent);
+      border-color: var(--accent);
+      box-shadow: 0 0 10px 1px var(--accent-dim);
+      animation: keyPulse 1.8s ease-in-out infinite;
+    }
+
+    .deck.state-done .deck-key.lit {
+      background: var(--live);
+      border-color: var(--live);
+      box-shadow: 0 0 10px 1px var(--live-dim);
+      animation: keyPulse 0.9s ease-in-out infinite;
+    }
+
+    .deck-key:nth-child(2n).lit { animation-delay: 0.3s; }
+    .deck-key:nth-child(3n).lit { animation-delay: 0.6s; }
+
+    @keyframes keyPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
     }
 
     /* ---------- Content rig ---------- */
@@ -190,7 +241,7 @@
       font-size: clamp(80px, 18vw, 240px);
       line-height: 1;
       letter-spacing: 4px;
-      color: var(--idle);
+      color: var(--text-dim);
       text-shadow: none;
       transition: color 0.5s ease, text-shadow 0.5s ease;
       font-variant-numeric: tabular-nums;
@@ -273,28 +324,38 @@
   <div class="vignette"></div>
   <div class="shockwave" id="shockwave"></div>
 
+  <div class="deck state-idle" id="deck">
+    <div class="deck-key lit"></div><div class="deck-key"></div><div class="deck-key lit"></div><div class="deck-key"></div>
+    <div class="deck-key"></div><div class="deck-key lit"></div><div class="deck-key"></div><div class="deck-key lit"></div>
+  </div>
+
   <div class="rig">
     <p class="label state-idle" id="label">
       <span class="dot" aria-hidden="true"></span>
-      <span id="labelText">Press space to start</span>
+      <span id="labelText">Starting in 10</span>
     </p>
     <div class="clock" id="clock" aria-live="polite">05:00</div>
   </div>
 
   <script>
     // ============ Configuration ============
-    // Change this to whatever countdown length you need, in seconds.
+    // Countdown length once it starts, in seconds.
     const DURATION_SECONDS = 5 * 60; // 5:00
+    // Delay before it auto-starts on page load, in seconds.
+    const PREROLL_SECONDS = 10;
 
     // ============ Countdown logic ============
     let remaining = DURATION_SECONDS;
+    let preroll = PREROLL_SECONDS;
     let started = false;
     let intervalId = null;
+    let prerollId = null;
 
     const clockEl = document.getElementById('clock');
     const labelEl = document.getElementById('label');
     const labelTextEl = document.getElementById('labelText');
     const shockwaveEl = document.getElementById('shockwave');
+    const deckEl = document.getElementById('deck');
 
     function format(totalSeconds) {
       const s = Math.max(0, totalSeconds);
@@ -323,10 +384,23 @@
       }
     }
 
+    function tickPreroll() {
+      preroll -= 1;
+      if (preroll > 0) {
+        labelTextEl.textContent = 'Starting in ' + preroll;
+      } else {
+        clearInterval(prerollId);
+        start();
+      }
+    }
+
     function start() {
       if (started) return;
       started = true;
       networkPhase = 'running';
+
+      deckEl.classList.remove('state-idle');
+      deckEl.classList.add('state-running');
 
       labelEl.classList.remove('state-idle');
       labelEl.classList.add('state-running');
@@ -338,6 +412,9 @@
 
     function onComplete() {
       networkPhase = 'done';
+
+      deckEl.classList.remove('state-running');
+      deckEl.classList.add('state-done');
 
       labelEl.classList.remove('state-running');
       labelEl.classList.add('state-done');
@@ -351,13 +428,7 @@
     }
 
     render();
-
-    window.addEventListener('keydown', function (e) {
-      if (e.code === 'Space' || e.key === ' ') {
-        e.preventDefault();
-        start();
-      }
-    });
+    prerollId = setInterval(tickPreroll, 1000);
 
     // ============ Animated circuit-network background ============
     const canvas = document.getElementById('bg');
@@ -368,7 +439,7 @@
     let networkPhase = 'idle'; // idle | running | done
 
     const PALETTE = {
-      idle:    { r: 120, g: 128, b: 138 },
+      idle:    { r: 152, g: 152, b: 158 },
       running: { r: 28,  g: 173, b: 231 },
       done:    { r: 53,  g: 214, b: 43  }
     };
@@ -412,7 +483,6 @@
     }
 
     function spawnBurstPulses() {
-      // Radiate a wave of pulses outward from the network on completion
       for (let i = 0; i < 18; i++) {
         setTimeout(maybeForcedPulse, i * 40);
       }
@@ -432,7 +502,6 @@
 
       ctx.clearRect(0, 0, W, H);
 
-      // Update positions
       const maxDist = 150;
       for (const n of nodes) {
         n.x += n.vx * speedMul;
@@ -441,7 +510,6 @@
         if (n.y < 0 || n.y > H) n.vy *= -1;
       }
 
-      // Draw connections
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
           const a = nodes[i], b = nodes[j];
@@ -458,7 +526,6 @@
         }
       }
 
-      // Draw nodes
       for (const n of nodes) {
         ctx.beginPath();
         ctx.fillStyle = `rgba(${c.r}, ${c.g}, ${c.b}, 0.55)`;
@@ -469,7 +536,6 @@
       }
       ctx.shadowBlur = 0;
 
-      // Traveling signal pulses along edges
       maybeSpawnPulse();
       pulses = pulses.filter(p => p.t < 1);
       for (const p of pulses) {
