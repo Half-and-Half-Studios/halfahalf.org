@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stream Countdown - Half & Half Studios</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --text: #f2f2f2;
+      --text-dim: #98989e;
+      --accent: #1cade7;
+      --accent-dim: rgba(28, 173, 231, 0.25);
+      --idle: #4a4a52;
+      --live: #35d62b;
+      --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+      --display: "Inter", Arial, Helvetica, sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    /*
+      Transparent by default so this works as an OBS/streaming
+      browser-source overlay. If you're previewing it in a regular
+      browser tab and want a solid backdrop, change "transparent"
+      below to var(--bg-preview).
+    */
+    body {
+      --bg-preview: #34343a;
+      background: transparent;
+      color: var(--text);
+      font-family: var(--display);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .rig {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 22px;
+      user-select: none;
+    }
+
+    .prompt {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--mono);
+      font-size: clamp(13px, 1.6vw, 18px);
+      font-weight: 500;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      transition: opacity 0.4s ease;
+    }
+
+    .prompt .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px 2px var(--accent);
+      animation: pulse 1.6s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .prompt.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .clock {
+      font-family: var(--mono);
+      font-weight: 800;
+      font-size: clamp(80px, 18vw, 240px);
+      line-height: 1;
+      letter-spacing: 4px;
+      color: var(--idle);
+      text-shadow: none;
+      transition: color 0.5s ease, text-shadow 0.5s ease;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .clock.running {
+      color: var(--accent);
+      text-shadow: 0 0 30px var(--accent-dim), 0 0 70px var(--accent-dim);
+    }
+
+    .clock .colon {
+      display: inline-block;
+      animation: none;
+    }
+
+    .clock.running .colon {
+      animation: blink 1s steps(1) infinite;
+    }
+
+    @keyframes blink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0.15; }
+    }
+
+    .clock.done {
+      color: var(--live);
+      text-shadow: 0 0 30px rgba(53, 214, 43, 0.35), 0 0 80px rgba(53, 214, 43, 0.25);
+      animation: flash 0.9s ease-in-out 3;
+    }
+
+    @keyframes flash {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .status {
+      font-family: var(--mono);
+      font-size: clamp(12px, 1.4vw, 16px);
+      font-weight: 500;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--live);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .status.show {
+      opacity: 1;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="rig">
+    <p class="prompt" id="prompt"><span class="dot" aria-hidden="true"></span><span>Press space to start</span></p>
+    <div class="clock" id="clock" aria-live="polite">05:00</div>
+    <p class="status" id="status">Live</p>
+  </div>
+
+  <script>
+    // ---- Configuration ----
+    // Change this to whatever countdown length you need, in seconds.
+    const DURATION_SECONDS = 5 * 60; // 5:00
+
+    let remaining = DURATION_SECONDS;
+    let started = false;
+    let intervalId = null;
+
+    const clockEl = document.getElementById('clock');
+    const promptEl = document.getElementById('prompt');
+    const statusEl = document.getElementById('status');
+
+    function format(totalSeconds) {
+      const s = Math.max(0, totalSeconds);
+      const mm = String(Math.floor(s / 60)).padStart(2, '0');
+      const ss = String(s % 60).padStart(2, '0');
+      return `${mm}<span class="colon">:</span>${ss}`;
+    }
+
+    function render() {
+      clockEl.innerHTML = format(remaining);
+    }
+
+    function tick() {
+      remaining -= 1;
+      render();
+      if (remaining <= 0) {
+        clearInterval(intervalId);
+        onComplete();
+      }
+    }
+
+    function start() {
+      if (started) return;
+      started = true;
+      promptEl.classList.add('hidden');
+      clockEl.classList.add('running');
+      intervalId = setInterval(tick, 1000);
+    }
+
+    function onComplete() {
+      clockEl.classList.remove('running');
+      clockEl.classList.add('done');
+      statusEl.classList.add('show');
+    }
+
+    render();
+
+    window.addEventListener('keydown', function (e) {
+      if (e.code === 'Space' || e.key === ' ') {
+        e.preventDefault();
+        start();
+      }
+    });
+  </script>
+</body>
+</html>
