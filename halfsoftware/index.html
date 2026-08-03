@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HalfDeck App — v1.0.0 BETA</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
+
+  :root{
+    --black: #0d0d0d;
+    --charcoal: #3c3c3c;
+    --white: #f4f4f4;
+    --accent: #1cade7;
+    --accent-soft: rgba(28,173,231,0.18);
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  body{
+    background: linear-gradient(180deg,
+      #050505 0%, #141414 16%, #262626 30%, #3c3c3c 46%,
+      #565656 60%, #8a8a8a 76%, #cfcfcf 90%, #f6f6f6 100%);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.5;
+    position: relative;
+  }
+
+  body::after{
+    content:"";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 50;
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  a{ color: inherit; }
+  ::selection{ background: var(--accent); color: #0d0d0d; }
+
+  .wrap{
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 32px 0;
+  }
+
+  .brand{
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: rgba(244,244,244,0.55);
+  }
+  .brand span{ color: var(--accent); }
+
+  .badge-beta{
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.45rem 0.9rem;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+
+  .hero{
+    position: relative;
+    padding: 64px 0 40px;
+    text-align: left;
+    overflow: hidden;
+  }
+
+  .hero::before{
+    content:"";
+    position:absolute;
+    top: -20%;
+    left: -10%;
+    width: 480px;
+    height: 480px;
+    background: radial-gradient(circle, var(--accent-soft), transparent 70%);
+    pointer-events:none;
+    z-index: 0;
+  }
+
+  .hero > *{ position: relative; z-index: 1; }
+
+  .eyebrow{
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 1.4rem;
+  }
+  .eyebrow::before{
+    content:"";
+    width: 22px;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.6;
+  }
+
+  h1{
+    font-weight: 900;
+    font-size: clamp(48px, 10vw, 84px);
+    letter-spacing: -0.03em;
+    line-height: 0.95;
+    background: linear-gradient(180deg, #ffffff 0%, #ffffff 45%, #9a9a9a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .version-line{
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .version-tag{
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--black);
+    background: var(--accent);
+    padding: 6px 12px;
+    border-radius: 999px;
+  }
+
+  .sub{
+    margin-top: 22px;
+    font-size: 16px;
+    color: rgba(244,244,244,0.6);
+    max-width: 52ch;
+    line-height: 1.65;
+  }
+
+  .cta-row{
+    margin-top: 34px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .btn{
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    padding: 14px 24px;
+    border-radius: 999px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .btn-primary{
+    background: var(--accent);
+    color: #08131a;
+    box-shadow: 0 0 0 0 rgba(28,173,231,0.5);
+  }
+  .btn-primary:hover{ transform: translateY(-1px); box-shadow: 0 6px 24px rgba(28,173,231,0.35); }
+
+  .notice{
+    margin-top: 40px;
+    border: 1px solid rgba(244,244,244,0.1);
+    background: linear-gradient(160deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+    border-radius: 20px;
+    padding: 18px 22px;
+    font-size: 14px;
+    color: rgba(244,244,244,0.6);
+  }
+  .notice strong{
+    color: var(--accent);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  /* Changelog */
+  .changelog{
+    padding: 56px 0 64px;
+    border-top: 1px solid rgba(244,244,244,0.08);
+  }
+  .section-label{
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 24px;
+  }
+  .changelog ul{
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .changelog li{
+    display: flex;
+    gap: 14px;
+    align-items: baseline;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(244,244,244,0.08);
+    font-size: 14.5px;
+    color: rgba(244,244,244,0.6);
+  }
+  .changelog li:last-child{ border-bottom: none; }
+  .tag{
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 3px 9px;
+    border-radius: 999px;
+    flex-shrink: 0;
+    white-space: nowrap;
+    margin-top: 2px;
+    text-transform: uppercase;
+  }
+  .tag-new{ background: var(--accent-soft); color: var(--accent); }
+  .tag-known{ background: rgba(244,244,244,0.08); color: rgba(244,244,244,0.55); }
+  .changelog strong{ color: var(--white); font-weight: 600; }
+
+  footer{
+    border-top: 1px solid rgba(244,244,244,0.08);
+    padding: 28px 0 44px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: rgba(244,244,244,0.4);
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 560px){
+    header{ flex-direction: column; align-items: flex-start; gap: 10px; }
+    .hero{ padding-top: 40px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .btn{ transition: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand">HALF <span>&amp;</span> HALF STUDIOS</div>
+    <div class="badge-beta">Beta Channel</div>
+  </header>
+
+  <section class="hero">
+    <div class="eyebrow">Companion App</div>
+    <h1>HalfDeck</h1>
+    <div class="version-line">
+      <span class="version-tag">v1.0.0-BETA</span>
+      <span class="pill"><span class="pulse-dot"></span>Coming soon</span>
+    </div>
+    <p class="sub">App made for customizing the HalfDeck. Rebinding keys and configuring knobs and faders.</p>
+
+    <div class="progress-row">
+      <div class="progress-track"><div class="progress-fill"></div></div>
+      <span class="progress-label">In progress</span>
+    </div>
+  </section>
+
+  <section class="changelog">
+    <div class="section-label">Description</div>
+    <p class="sub" style="margin-top:0;">Description is in the works.</p>
+  </section>
+
+  <footer>
+    <span>© 2026 — Half &amp; Half Studios</span>
+    <span>HalfSoftware Build 1.0.0-BETA</span>
+  </footer>
+
+</div>
+</body>
+</html>
