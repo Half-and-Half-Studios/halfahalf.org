@@ -1,1 +1,475 @@
-asd
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stream Countdown - Half & Half Studios</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #34343a;
+      --bg-deep: #121214;
+      --panel: #131315;
+      --panel-line: rgba(242, 242, 242, 0.07);
+      --text: #f2f2f2;
+      --text-dim: #98989e;
+      --accent: #e78a1c;
+      --accent-dim: rgba(231, 138, 28, 0.22);
+      --idle-rgb: 152, 152, 158;
+      --accent-rgb: 231, 138, 28;
+      --live: #35d62b;
+      --live-rgb: 53, 214, 43;
+      --live-dim: rgba(53, 214, 43, 0.25);
+      --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+      --display: "Inter", Arial, Helvetica, sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body { width: 100%; height: 100%; overflow: hidden; }
+
+    body {
+      background:
+        radial-gradient(1200px 600px at 85% -10%, rgba(231, 138, 28, 0.10), transparent 60%),
+        var(--bg);
+      color: var(--text);
+      font-family: var(--display);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    canvas#bg { position: fixed; inset: 0; z-index: 0; display: block; }
+
+    .glow { position: fixed; z-index: 0; border-radius: 50%; filter: blur(90px); mix-blend-mode: screen; pointer-events: none; }
+    .glow-a { width: 46vw; height: 46vw; background: radial-gradient(circle, rgba(231, 138, 28, 0.20), transparent 70%); top: -10%; left: -8%; animation: driftA 22s ease-in-out infinite; }
+    .glow-b { width: 38vw; height: 38vw; background: radial-gradient(circle, rgba(231, 138, 28, 0.06), transparent 70%); bottom: -12%; right: -6%; animation: driftB 28s ease-in-out infinite; }
+    @keyframes driftA { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(6vw, 8vh) scale(1.15); } }
+    @keyframes driftB { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(-5vw, -6vh) scale(1.1); } }
+
+    .grid {
+      position: fixed; inset: -2px; z-index: 0;
+      background-image:
+        linear-gradient(rgba(242, 242, 242, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(242, 242, 242, 0.035) 1px, transparent 1px);
+      background-size: 46px 46px;
+      animation: gridDrift 60s linear infinite;
+      pointer-events: none;
+    }
+    @keyframes gridDrift { from { background-position: 0 0, 0 0; } to { background-position: 460px 0, 0 460px; } }
+
+    .vignette { position: fixed; inset: 0; z-index: 1; pointer-events: none; background: radial-gradient(120% 90% at 50% 50%, transparent 45%, rgba(10, 10, 12, 0.5) 100%); }
+
+    /* ---------- Deck-button LED rack ---------- */
+    .deck { position: fixed; z-index: 2; left: clamp(20px, 3vw, 40px); bottom: clamp(20px, 3vw, 40px); display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; pointer-events: none; }
+    .deck-key { width: clamp(12px, 1.4vw, 18px); height: clamp(12px, 1.4vw, 18px); border-radius: 4px; background: var(--panel); border: 1px solid var(--panel-line); transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease; }
+    .deck.state-idle .deck-key.lit { background: rgba(var(--idle-rgb), 0.5); border-color: rgba(var(--idle-rgb), 0.6); }
+    .deck.state-running .deck-key.lit { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 10px 1px var(--accent-dim); animation: keyPulse 1.8s ease-in-out infinite; }
+    .deck.state-done .deck-key.lit { background: var(--live); border-color: var(--live); box-shadow: 0 0 10px 1px var(--live-dim); animation: keyPulse 0.9s ease-in-out infinite; }
+    .deck-key:nth-child(2n).lit { animation-delay: 0.3s; }
+    .deck-key:nth-child(3n).lit { animation-delay: 0.6s; }
+    @keyframes keyPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    /* ---------- Content rig ---------- */
+    .rig { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 24px; user-select: none; }
+
+    .screen { display: none; flex-direction: column; align-items: center; gap: 24px; }
+    .screen.active { display: flex; }
+    .screen.fade-out { animation: fadeOut 0.35s ease forwards; }
+    .screen.fade-in { animation: fadeIn 0.4s ease forwards; }
+    @keyframes fadeOut { to { opacity: 0; transform: translateY(-8px) scale(0.98); } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+    /* ---------- Selection screen ---------- */
+    .pick-heading { font-family: var(--mono); font-size: clamp(13px, 1.6vw, 19px); font-weight: 500; letter-spacing: 3px; text-transform: uppercase; color: var(--text-dim); display: flex; align-items: center; gap: 10px; }
+    .pick-heading .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px 2px var(--accent); animation: pulse 1.6s ease-in-out infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    .preset-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(120px, 1fr));
+      gap: clamp(12px, 1.6vw, 18px);
+      margin-top: 6px;
+    }
+
+    .preset-btn {
+      font-family: var(--mono);
+      font-weight: 700;
+      font-size: clamp(20px, 2.6vw, 30px);
+      color: var(--text);
+      background: var(--panel);
+      border: 1px solid var(--panel-line);
+      border-radius: 12px;
+      padding: clamp(18px, 2.4vw, 26px) clamp(20px, 3vw, 34px);
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: border-color 0.2s ease, background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease, color 0.2s ease;
+    }
+
+    .preset-btn:hover, .preset-btn:focus-visible {
+      border-color: var(--accent);
+      background: rgba(231, 138, 28, 0.10);
+      color: var(--accent);
+      box-shadow: 0 0 22px var(--accent-dim);
+      transform: translateY(-2px);
+      outline: none;
+    }
+
+    .preset-btn:active { transform: translateY(0) scale(0.97); }
+
+    .preset-sub { font-family: var(--mono); font-size: clamp(11px, 1.1vw, 13px); color: var(--text-dim); letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; }
+
+    /* ---------- Countdown screen ---------- */
+    .label {
+      display: flex; align-items: center; gap: 10px;
+      font-family: var(--mono); font-size: clamp(13px, 1.6vw, 19px); font-weight: 500; letter-spacing: 3px; text-transform: uppercase;
+      transition: color 0.5s ease, opacity 0.4s ease;
+    }
+    .label .dot { width: 8px; height: 8px; border-radius: 50%; transition: background 0.5s ease, box-shadow 0.5s ease; }
+    .label.state-idle { color: var(--text-dim); }
+    .label.state-idle .dot { background: var(--accent); box-shadow: 0 0 10px 2px var(--accent); animation: pulse 1.6s ease-in-out infinite; }
+    .label.state-running { color: var(--accent); }
+    .label.state-running .dot { background: var(--accent); box-shadow: 0 0 12px 2px var(--accent); animation: pulse 1s ease-in-out infinite; }
+    .label.state-done { color: var(--live); }
+    .label.state-done .dot { background: var(--live); box-shadow: 0 0 14px 3px var(--live); animation: pulse 0.7s ease-in-out infinite; }
+
+    .clock {
+      font-family: var(--mono); font-weight: 800;
+      font-size: clamp(80px, 18vw, 240px);
+      line-height: 1; letter-spacing: 4px;
+      color: var(--text-dim);
+      transition: color 0.5s ease, text-shadow 0.5s ease;
+      font-variant-numeric: tabular-nums;
+    }
+    .clock.running { color: var(--accent); text-shadow: 0 0 30px var(--accent-dim), 0 0 80px var(--accent-dim); }
+    .clock.done { color: var(--live); text-shadow: 0 0 30px var(--live-dim), 0 0 90px var(--live-dim); }
+    .clock .colon { display: inline-block; }
+    .clock.running .colon { animation: blink 1s steps(1) infinite; }
+    @keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0.15; } }
+
+    .clock.tick { animation: tickPulse 0.35s ease-out; }
+    @keyframes tickPulse { 0% { transform: scale(1); } 30% { transform: scale(1.035); } 100% { transform: scale(1); } }
+
+    .clock.burst { animation: burstFlash 0.8s ease-in-out 3; }
+    @keyframes burstFlash { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.45; transform: scale(1.05); } }
+
+    .change-btn {
+      font-family: var(--mono);
+      font-size: clamp(11px, 1.1vw, 13px);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      background: transparent;
+      border: 1px solid var(--panel-line);
+      border-radius: 8px;
+      padding: 8px 16px;
+      cursor: pointer;
+      transition: border-color 0.2s ease, color 0.2s ease;
+    }
+    .change-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    .shockwave {
+      position: fixed; z-index: 1; top: 50%; left: 50%;
+      width: 10px; height: 10px; border-radius: 50%;
+      border: 2px solid var(--live);
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      pointer-events: none;
+    }
+    .shockwave.fire { animation: expand 1.4s ease-out; }
+    @keyframes expand { 0% { width: 10px; height: 10px; opacity: 0.9; border-width: 3px; } 100% { width: 140vmax; height: 140vmax; opacity: 0; border-width: 1px; } }
+  </style>
+</head>
+
+<body>
+  <canvas id="bg"></canvas>
+  <div class="glow glow-a"></div>
+  <div class="glow glow-b"></div>
+  <div class="grid"></div>
+  <div class="vignette"></div>
+  <div class="shockwave" id="shockwave"></div>
+
+  <div class="deck state-idle" id="deck">
+    <div class="deck-key lit"></div><div class="deck-key"></div><div class="deck-key lit"></div><div class="deck-key"></div>
+    <div class="deck-key"></div><div class="deck-key lit"></div><div class="deck-key"></div><div class="deck-key lit"></div>
+  </div>
+
+  <div class="rig">
+    <!-- Screen 1: preset picker -->
+    <div class="screen active" id="pickScreen">
+      <p class="pick-heading"><span class="dot" aria-hidden="true"></span><span>Choose delay</span></p>
+      <div class="preset-grid" id="presetGrid">
+        <button class="preset-btn" data-seconds="60">1m</button>
+        <button class="preset-btn" data-seconds="300">5m</button>
+        <button class="preset-btn" data-seconds="600">10m</button>
+        <button class="preset-btn" data-seconds="900">15m</button>
+        <button class="preset-btn" data-seconds="1800">30m</button>
+        <button class="preset-btn" data-seconds="3600">1h</button>
+      </div>
+      <p class="preset-sub">Countdown starts immediately</p>
+    </div>
+
+    <!-- Screen 2: main countdown -->
+    <div class="screen" id="countScreen">
+      <p class="label state-idle" id="label">
+        <span class="dot" aria-hidden="true"></span>
+        <span id="labelText">Technical difficulties</span>
+      </p>
+      <div class="clock" id="clock" aria-live="polite">00:00</div>
+      <button class="change-btn" id="changeBtn">Change delay</button>
+    </div>
+  </div>
+
+  <script>
+    // ============ State ============
+    let remaining = 0;
+    let duration = 0;
+    let intervalId = null;
+    let networkPhase = 'idle'; // idle | running | done
+
+    const pickScreen = document.getElementById('pickScreen');
+    const countScreen = document.getElementById('countScreen');
+    const presetGrid = document.getElementById('presetGrid');
+    const changeBtn = document.getElementById('changeBtn');
+
+    const clockEl = document.getElementById('clock');
+    const labelEl = document.getElementById('label');
+    const labelTextEl = document.getElementById('labelText');
+    const shockwaveEl = document.getElementById('shockwave');
+    const deckEl = document.getElementById('deck');
+
+    function format(totalSeconds) {
+      const s = Math.max(0, totalSeconds);
+      const h = Math.floor(s / 3600);
+      const mm = String(Math.floor((s % 3600) / 60)).padStart(2, '0');
+      const ss = String(s % 60).padStart(2, '0');
+      if (h > 0) {
+        return `${h}<span class="colon">:</span>${mm}<span class="colon">:</span>${ss}`;
+      }
+      return `${mm}<span class="colon">:</span>${ss}`;
+    }
+
+    function render() {
+      clockEl.innerHTML = format(remaining);
+    }
+
+    function pulseTick() {
+      clockEl.classList.remove('tick');
+      void clockEl.offsetWidth;
+      clockEl.classList.add('tick');
+    }
+
+    function resetVisualState() {
+      clearInterval(intervalId);
+      intervalId = null;
+      networkPhase = 'idle';
+
+      deckEl.className = 'deck state-idle';
+      labelEl.className = 'label state-idle';
+      clockEl.className = 'clock';
+      shockwaveEl.classList.remove('fire');
+    }
+
+    function goToPickScreen() {
+      resetVisualState();
+      countScreen.classList.remove('active', 'fade-in');
+      pickScreen.classList.add('active', 'fade-in');
+      setTimeout(() => pickScreen.classList.remove('fade-in'), 400);
+    }
+
+    function goToCountScreen(seconds) {
+      duration = seconds;
+      remaining = seconds;
+      resetVisualState();
+      render();
+
+      pickScreen.classList.remove('active');
+      countScreen.classList.add('active', 'fade-in');
+      setTimeout(() => countScreen.classList.remove('fade-in'), 400);
+
+      start();
+    }
+
+    function tick() {
+      remaining -= 1;
+      render();
+      pulseTick();
+      if (remaining <= 0) {
+        clearInterval(intervalId);
+        onComplete();
+      }
+    }
+
+    function start() {
+      networkPhase = 'running';
+
+      deckEl.classList.remove('state-idle');
+      deckEl.classList.add('state-running');
+
+      labelEl.classList.remove('state-idle');
+      labelEl.classList.add('state-running');
+      labelTextEl.textContent = 'Technical difficulties';
+
+      clockEl.classList.add('running');
+      intervalId = setInterval(tick, 1000);
+    }
+
+    function onComplete() {
+      networkPhase = 'done';
+
+      deckEl.classList.remove('state-running');
+      deckEl.classList.add('state-done');
+
+      labelEl.classList.remove('state-running');
+      labelEl.classList.add('state-done');
+      labelTextEl.textContent = "Back online";
+
+      clockEl.classList.remove('running');
+      clockEl.classList.add('done', 'burst');
+
+      shockwaveEl.classList.add('fire');
+      spawnBurstPulses();
+    }
+
+    presetGrid.addEventListener('click', (e) => {
+      const btn = e.target.closest('.preset-btn');
+      if (!btn) return;
+      goToCountScreen(parseInt(btn.dataset.seconds, 10));
+    });
+
+    changeBtn.addEventListener('click', goToPickScreen);
+
+    // ============ Animated circuit-network background ============
+    const canvas = document.getElementById('bg');
+    const ctx = canvas.getContext('2d');
+    let W, H, DPR;
+    let nodes = [];
+    let pulses = [];
+
+    const PALETTE = {
+      idle:    { r: 152, g: 152, b: 158 },
+      running: { r: 28,  g: 173, b: 231 },
+      done:    { r: 53,  g: 214, b: 43  }
+    };
+
+    function resize() {
+      DPR = Math.min(window.devicePixelRatio || 1, 2);
+      W = window.innerWidth;
+      H = window.innerHeight;
+      canvas.width = W * DPR;
+      canvas.height = H * DPR;
+      canvas.style.width = W + 'px';
+      canvas.style.height = H + 'px';
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      initNodes();
+    }
+
+    function initNodes() {
+      const count = Math.max(28, Math.min(85, Math.floor((W * H) / 22000)));
+      nodes = new Array(count).fill(0).map(() => ({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        vx: (Math.random() - 0.5) * 0.18,
+        vy: (Math.random() - 0.5) * 0.18,
+        r: 1.2 + Math.random() * 1.6
+      }));
+    }
+
+    function maybeSpawnPulse() {
+      const chance = networkPhase === 'idle' ? 0.01 : networkPhase === 'running' ? 0.035 : 0.06;
+      if (Math.random() > chance) return;
+      if (nodes.length < 2) return;
+      const a = nodes[Math.floor(Math.random() * nodes.length)];
+      let closest = null, closestD = Infinity;
+      for (const n of nodes) {
+        if (n === a) continue;
+        const d = Math.hypot(n.x - a.x, n.y - a.y);
+        if (d < closestD && d < 220) { closestD = d; closest = n; }
+      }
+      if (!closest) return;
+      pulses.push({ a, b: closest, t: 0, speed: 0.02 + Math.random() * 0.015 });
+    }
+
+    function spawnBurstPulses() {
+      for (let i = 0; i < 18; i++) {
+        setTimeout(maybeForcedPulse, i * 40);
+      }
+    }
+
+    function maybeForcedPulse() {
+      if (nodes.length < 2) return;
+      const a = nodes[Math.floor(Math.random() * nodes.length)];
+      const b = nodes[Math.floor(Math.random() * nodes.length)];
+      if (a === b) return;
+      pulses.push({ a, b, t: 0, speed: 0.03 + Math.random() * 0.02 });
+    }
+
+    function step() {
+      const speedMul = networkPhase === 'idle' ? 1 : networkPhase === 'running' ? 1.6 : 2.2;
+      const c = PALETTE[networkPhase];
+
+      ctx.clearRect(0, 0, W, H);
+
+      const maxDist = 150;
+      for (const n of nodes) {
+        n.x += n.vx * speedMul;
+        n.y += n.vy * speedMul;
+        if (n.x < 0 || n.x > W) n.vx *= -1;
+        if (n.y < 0 || n.y > H) n.vy *= -1;
+      }
+
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const a = nodes[i], b = nodes[j];
+          const d = Math.hypot(a.x - b.x, a.y - b.y);
+          if (d < maxDist) {
+            const alpha = (1 - d / maxDist) * 0.18;
+            ctx.strokeStyle = `rgba(${c.r}, ${c.g}, ${c.b}, ${alpha})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      for (const n of nodes) {
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(${c.r}, ${c.g}, ${c.b}, 0.55)`;
+        ctx.shadowColor = `rgba(${c.r}, ${c.g}, ${c.b}, 0.8)`;
+        ctx.shadowBlur = 6;
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.shadowBlur = 0;
+
+      maybeSpawnPulse();
+      pulses = pulses.filter(p => p.t < 1);
+      for (const p of pulses) {
+        p.t += p.speed;
+        const x = p.a.x + (p.b.x - p.a.x) * p.t;
+        const y = p.a.y + (p.b.y - p.a.y) * p.t;
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(${c.r}, ${c.g}, ${c.b}, ${0.9 * (1 - p.t)})`;
+        ctx.shadowColor = `rgba(${c.r}, ${c.g}, ${c.b}, 1)`;
+        ctx.shadowBlur = 10;
+        ctx.arc(x, y, 2.2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+
+      requestAnimationFrame(step);
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+    requestAnimationFrame(step);
+  </script>
+</body>
+</html>
