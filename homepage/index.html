@@ -239,6 +239,7 @@
     .news-item:nth-child(2) { animation-delay: 0.10s; }
     .news-item:nth-child(3) { animation-delay: 0.18s; }
     .news-item:nth-child(4) { animation-delay: 0.26s; }
+    .news-item:nth-child(5) { animation-delay: 0.34s; }
 
     @keyframes rise {
       from { opacity: 0; transform: translateY(6px); }
@@ -281,13 +282,87 @@
       box-shadow: 0 0 12px 1px var(--accent), 0 0 0 4px rgba(28, 173, 231, 0.12);
     }
 
+    /* Card row: details strip + card, revealed by sliding the card right */
+    .card-row {
+      display: flex;
+      align-items: stretch;
+      border-radius: 10px;
+    }
+
+    .details-panel {
+      flex: 0 0 0px;
+      width: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      background: var(--bg-deep);
+      border: 1px solid var(--panel-line);
+      border-right: none;
+      border-radius: 10px 0 0 10px;
+      padding: 0;
+      transition: flex-basis 0.32s cubic-bezier(0.4, 0, 0.2, 1), width 0.32s cubic-bezier(0.4, 0, 0.2, 1), padding 0.32s ease;
+    }
+
+    .news-item.is-open .details-panel {
+      flex-basis: 104px;
+      width: 104px;
+      padding: 14px 8px;
+    }
+
+    .detail-day {
+      font-family: var(--mono);
+      font-size: 30px;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .detail-month {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 1.5px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .detail-divider {
+      width: 20px;
+      height: 1px;
+      background: var(--panel-line);
+      margin: 6px 0;
+    }
+
+    .detail-tag {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--accent-warm);
+      white-space: nowrap;
+    }
+
     .news-card {
+      position: relative;
+      flex: 1;
+      min-width: 0;
       background: var(--panel);
       border: 1px solid var(--panel-line);
       border-radius: 10px;
-      padding: 18px 22px 20px;
+      padding: 18px 44px 20px 22px;
       color: var(--text);
-      transition: border-color 0.15s ease, transform 0.15s ease;
+      cursor: pointer;
+      transition: border-color 0.15s ease, border-radius 0.32s ease;
+    }
+
+    .news-item.is-open .news-card {
+      border-radius: 0 10px 10px 0;
     }
 
     .news-card:hover {
@@ -328,7 +403,27 @@
       font-weight: 400;
       line-height: 1.55;
       color: #cfcfcf;
-      max-width: 620px;
+      max-width: 600px;
+    }
+
+    .chevron {
+      position: absolute;
+      top: 20px;
+      right: 18px;
+      width: 18px;
+      height: 18px;
+      color: var(--accent);
+      opacity: 0.7;
+      transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .news-card:hover .chevron {
+      opacity: 1;
+    }
+
+    .news-item.is-open .chevron {
+      transform: rotate(90deg);
     }
 
     /* ---------- Footer ---------- */
@@ -402,6 +497,14 @@
         max-width: 100%;
       }
 
+      .details-panel {
+        display: none;
+      }
+
+      .news-item.is-open .news-card {
+        border-radius: 10px;
+      }
+
       .copyright {
         left: 0;
         font-size: 11px;
@@ -413,13 +516,18 @@
       .title { font-size: 34px; }
       .news-item { grid-template-columns: 16px 1fr; column-gap: 14px; }
       .node { width: 9px; height: 9px; margin-top: 6px; }
-      .news-card { padding: 14px 16px 16px; }
+      .news-card { padding: 14px 40px 16px 16px; }
       .news-card-head { flex-direction: column; gap: 4px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
       .news-item { opacity: 1; animation: none; }
       .eyebrow .dot { animation: none; }
+      .details-panel,
+      .news-card,
+      .chevron {
+        transition: none;
+      }
     }
   </style>
 </head>
@@ -448,62 +556,107 @@
     <main class="content">
       <p class="eyebrow"><span class="dot" aria-hidden="true"></span>Signal log</p>
       <h1 class="title">News - Half & Half Studios</h1>
-      <p class="lede">A running log of everything new in Half &amp; Half Studios — builds, releases, and the site you're standing on.</p>
+      <p class="lede">A running log of everything new in Half &amp; Half Studios — builds, releases, and the site you're standing on. Tap an entry for details.</p>
 
       <ol class="news-list">
         <li class="news-item">
           <div class="rail"><span class="node" aria-hidden="true"></span></div>
-          <article class="news-card">
-            <div class="news-card-head">
-              <h2>Website redesigned</h2>
-              <p class="news-date">07.18.2026 — <span class="author">AxoTheDev</span></p>
+          <div class="card-row">
+            <div class="details-panel" aria-hidden="true">
+              <span class="detail-day">18</span>
+              <span class="detail-month">Jul</span>
+              <span class="detail-divider"></span>
+              <span class="detail-tag">Design</span>
             </div>
-            <p>Redesigned the whole website with changing colors, adding animations and adding the website status indicator.</p>
-          </article>
+            <article class="news-card" role="button" tabindex="0" aria-expanded="false">
+              <div class="news-card-head">
+                <h2>Website redesigned</h2>
+                <p class="news-date">07.18.2026 — <span class="author">AxoTheDev</span></p>
+              </div>
+              <p>Redesigned the whole website with changing colors, adding animations and adding the website status indicator.</p>
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </article>
+          </div>
         </li>
 
         <li class="news-item">
           <div class="rail"><span class="node" aria-hidden="true"></span></div>
-          <article class="news-card">
-            <div class="news-card-head">
-              <h2>Added support</h2>
-              <p class="news-date">07.06.2026 — <span class="author">AxoTheDev</span></p>
+          <div class="card-row">
+            <div class="details-panel" aria-hidden="true">
+              <span class="detail-day">06</span>
+              <span class="detail-month">Jul</span>
+              <span class="detail-divider"></span>
+              <span class="detail-tag">Feature</span>
             </div>
-            <p>Added the SUPPORT tab to the main nav with a working contact system. Please don't use it just for fun.</p>
-          </article>
+            <article class="news-card" role="button" tabindex="0" aria-expanded="false">
+              <div class="news-card-head">
+                <h2>Added support</h2>
+                <p class="news-date">07.06.2026 — <span class="author">AxoTheDev</span></p>
+              </div>
+              <p>Added the SUPPORT tab to the main nav with a working contact system. Please don't use it just for fun.</p>
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </article>
+          </div>
         </li>
 
         <li class="news-item">
           <div class="rail"><span class="node" aria-hidden="true"></span></div>
-          <article class="news-card">
-            <div class="news-card-head">
-              <h2>Website finished</h2>
-              <p class="news-date">06.03.2026 — <span class="author">AxoTheDev</span></p>
+          <div class="card-row">
+            <div class="details-panel" aria-hidden="true">
+              <span class="detail-day">03</span>
+              <span class="detail-month">Jun</span>
+              <span class="detail-divider"></span>
+              <span class="detail-tag">Milestone</span>
             </div>
-            <p>Officially finished the website and made some finishing touches. The release won't be announced here, but on our Discord server. Releasing 06.20.2026.</p>
-          </article>
+            <article class="news-card" role="button" tabindex="0" aria-expanded="false">
+              <div class="news-card-head">
+                <h2>Website finished</h2>
+                <p class="news-date">06.03.2026 — <span class="author">AxoTheDev</span></p>
+              </div>
+              <p>Officially finished the website and made some finishing touches. The release won't be announced here, but on our Discord server. Releasing 06.20.2026.</p>
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </article>
+          </div>
         </li>
 
         <li class="news-item">
           <div class="rail"><span class="node" aria-hidden="true"></span></div>
-          <article class="news-card">
-            <div class="news-card-head">
-              <h2>Added a few tabs</h2>
-              <p class="news-date">06.02.2026 — <span class="author">AxoTheDev</span></p>
+          <div class="card-row">
+            <div class="details-panel" aria-hidden="true">
+              <span class="detail-day">02</span>
+              <span class="detail-month">Jun</span>
+              <span class="detail-divider"></span>
+              <span class="detail-tag">Feature</span>
             </div>
-            <p>Added the Links, Form, Our Team &amp; Games tabs. Updated About Us, Form, Games, Links &amp; Our Team.</p>
-          </article>
+            <article class="news-card" role="button" tabindex="0" aria-expanded="false">
+              <div class="news-card-head">
+                <h2>Added a few tabs</h2>
+                <p class="news-date">06.02.2026 — <span class="author">AxoTheDev</span></p>
+              </div>
+              <p>Added the Links, Form, Our Team &amp; Games tabs. Updated About Us, Form, Games, Links &amp; Our Team.</p>
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </article>
+          </div>
         </li>
 
         <li class="news-item">
           <div class="rail"><span class="node" aria-hidden="true"></span></div>
-          <article class="news-card">
-            <div class="news-card-head">
-              <h2>Website created</h2>
-              <p class="news-date">05.25.2026 — <span class="author">AxoTheDev</span></p>
+          <div class="card-row">
+            <div class="details-panel" aria-hidden="true">
+              <span class="detail-day">25</span>
+              <span class="detail-month">May</span>
+              <span class="detail-divider"></span>
+              <span class="detail-tag">Milestone</span>
             </div>
-            <p>Created the official Half &amp; Half Studios website and added all the tabs, including About Us, Our Team, Games and Links. Also registered copyright for Half &amp; Half Studios.</p>
-          </article>
+            <article class="news-card" role="button" tabindex="0" aria-expanded="false">
+              <div class="news-card-head">
+                <h2>Website created</h2>
+                <p class="news-date">05.25.2026 — <span class="author">AxoTheDev</span></p>
+              </div>
+              <p>Created the official Half &amp; Half Studios website and added all the tabs, including About Us, Our Team, Games and Links. Also registered copyright for Half &amp; Half Studios.</p>
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </article>
+          </div>
         </li>
       </ol>
     </main>
@@ -512,5 +665,24 @@
   <footer class="copyright">
     © 2026 Half &amp; Half Studios. All rights reserved.
   </footer>
+
+  <script>
+    document.querySelectorAll('.news-item').forEach(function (item) {
+      const card = item.querySelector('.news-card');
+
+      function toggle() {
+        const isOpen = item.classList.toggle('is-open');
+        card.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      }
+
+      card.addEventListener('click', toggle);
+      card.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggle();
+        }
+      });
+    });
+  </script>
 </body>
 </html>
