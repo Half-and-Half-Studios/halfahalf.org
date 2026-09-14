@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Half & Half Studios — Screensaver</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { margin: 0; padding: 0; }
+  html, body { width: 100%; height: 100%; background: #050506; overflow: hidden; }
+  svg#art { position: fixed; inset: 0; display: block; }
+  .band { mix-blend-mode: overlay; }
+  .ridge { fill: none; stroke: rgba(255,255,255,0.30); stroke-width: 1.4; mix-blend-mode: screen; }
+  #grain {
+    position: fixed; inset: 0; pointer-events: none;
+    opacity: 0.03; mix-blend-mode: overlay;
+  }
+  #vignette {
+    position: fixed; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0) 40%, rgba(0,0,0,0.5) 100%);
+  }
+</style>
+</head>
+<body>
+
+<svg id="art" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"  stop-color="#22d3ee"/>
+      <stop offset="45%" stop-color="#2ee6a0"/>
+      <stop offset="75%" stop-color="#d94fb0"/>
+      <stop offset="100%" stop-color="#ff3f8f"/>
+    </linearGradient>
+    <linearGradient id="shadeA" x1="0%" y1="0%" x2="100%" y2="60%">
+      <stop offset="0%"  stop-color="#ffffff" stop-opacity="0.32"/>
+      <stop offset="55%" stop-color="#808080" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.30"/>
+    </linearGradient>
+    <linearGradient id="shadeB" x1="100%" y1="0%" x2="0%" y2="60%">
+      <stop offset="0%"  stop-color="#ffffff" stop-opacity="0.26"/>
+      <stop offset="55%" stop-color="#808080" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.34"/>
+    </linearGradient>
+  </defs>
+  <rect id="bg" x="0" y="0" width="100%" height="100%" fill="url(#bgGrad)"/>
+  <g id="bands"></g>
+  <g id="ridges"></g>
+</svg>
+
+<svg id="grain" width="100%" height="100%">
+  <filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/></filter>
+  <rect width="100%" height="100%" filter="url(#n)"/>
+</svg>
+<div id="vignette"></div>
+
+<script>
+(function () {
+  const svg = document.getElementById('art');
+  const bandsG = document.getElementById('bands');
+  const ridgesG = document.getElementById('ridges');
+  const bgGrad = document.getElementById('bgGrad');
+  const NS = 'http://www.w3.org/2000/svg';
+
+  let w, h;
+  const BAND_COUNT = 6;
+  const SAMPLES = 6; // x-samples per boundary line
+
+  // interior boundary configs (count = BAND_COUNT - 1)
+  let boundaries = [];
+
+  function resize() {
+    w = window.innerWidth;
+    h = window.innerHeight;
+    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+    svg.setAttribute('width', w);
+    svg.setAttribute('height', h);
+
+    boundaries = [];
+    for (let i = 1; i < BAND_COUNT; i++) {
+      boundaries.push({
+        baseY: (i / BAND_COUNT) * h,
+        amp: h * (0.045 + Math.random() * 0.03),
+        freq: 0.05 + Math.random() * 0.07,
+        phase: Math.random() * Math.PI * 2,
+        xPhase: 0.6 + Math.random() * 0.8
+      });
+    }
+
+    buildElements();
+  }
+
+  function xSamples() {
+    const pts = [];
+    for (let i = 0; i <= SAMPLES; i++) pts.push((i / SAMPLES) * w);
+    return pts;
+  }
+
+  function smoothPath(points) {
+    let d = `M ${points[0].x.toFixed(1)},${points[0].y.toFixed(1)}`;
+    for (let i = 1; i < points.length - 1; i++) {
+      const xc = (points[i].x + points[i + 1].x) / 2;
+      const yc = (points[i].y + points[i + 1].y) / 2;
+      d += ` Q ${points[i].x.toFixed(1)},${points[i].y.toFixed(1)} ${xc.toFixed(1)},${yc.toFixed(1)}`;
+    }
+    const last = points[points.length - 1];
+    d += ` L ${last.x.toFixed(1)},${last.y.toFixed(1)}`;
+    return d;
+  }
+
+  function bandPathD(topPts, botPts) {
+    let d = smoothPath(topPts);
+    const botLast = botPts[botPts.length - 1];
+    d += ` L ${botLast.x.toFixed(1)},${botLast.y.toFixed(1)}`;
+    const reversedBottom = botPts.slice().reverse();
+    const bottomD = smoothPath(reversedBottom).replace(/^M [^ ]+ /, 'L ');
+    d += ' ' + bottomD + ' Z';
+    return d;
+  }
+
+  let bandEls = [];
+  let ridgeEls = [];
+
+  function buildElements() {
+    bandsG.innerHTML = '';
+    ridgesG.innerHTML = '';
+    bandEls = [];
+    ridgeEls = [];
+
+    for (let i = 0; i < BAND_COUNT; i++) {
+      const path = document.createElementNS(NS, 'path');
+      path.setAttribute('class', 'band');
+      path.setAttribute('fill', i % 2 === 0 ? 'url(#shadeA)' : 'url(#shadeB)');
+      bandsG.appendChild(path);
+      bandEls.push(path);
+    }
+    for (let i = 0; i < boundaries.length; i++) {
+      const path = document.createElementNS(NS, 'path');
+      path.setAttribute('class', 'ridge');
+      ridgesG.appendChild(path);
+      ridgeEls.push(path);
+    }
+  }
+
+  function boundaryPoints(b, time, xs) {
+    return xs.map((x, idx) => ({
+      x,
+      y: b.baseY + Math.sin(time * b.freq + b.phase + idx * b.xPhase) * b.amp
+    }));
+  }
+
+  function tick(t) {
+    const time = t * 0.001;
+    const xs = xSamples();
+
+    // slow drifting background gradient angle for a living, non-static field
+    const a = time * 0.6;
+    const x2 = 50 + Math.cos(a * Math.PI / 180) * 50;
+    const y2 = 50 + Math.sin(a * Math.PI / 180) * 50;
+    bgGrad.setAttribute('x2', x2 + '%');
+    bgGrad.setAttribute('y2', y2 + '%');
+
+    const lines = [];
+    lines.push(xs.map(x => ({ x, y: -0.1 * h })));
+    for (const b of boundaries) lines.push(boundaryPoints(b, time, xs));
+    lines.push(xs.map(x => ({ x, y: 1.1 * h })));
+
+    for (let i = 0; i < BAND_COUNT; i++) {
+      bandEls[i].setAttribute('d', bandPathD(lines[i], lines[i + 1]));
+    }
+    for (let i = 0; i < ridgeEls.length; i++) {
+      ridgeEls[i].setAttribute('d', smoothPath(lines[i + 1]));
+    }
+
+    requestAnimationFrame(tick);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  requestAnimationFrame(tick);
+})();
+</script>
+
+</body>
+</html>
