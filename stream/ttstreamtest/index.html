@@ -7,19 +7,20 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="grid"></div>
-  <div class="scanbar"></div>
+  <canvas id="circuit"></canvas>
+  <div class="vignette"></div>
 
-  <main class="center">
-    <h1 class="title">Stream Test</h1>
-    <p class="clock" id="clock">00:00:00.000</p>
+  <main class="stage">
+    <div class="ring" id="ring">
+      <div class="inner">
+        <h1 class="title"><span>Stream</span><span>Test</span></h1>
+        <p class="clock" id="clock">00:00:00.000</p>
+        <div class="keys" id="keys">
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+        </div>
+      </div>
+    </div>
   </main>
-
-  <footer class="hud">
-    <span id="fps">FPS: --</span>
-    <span id="res">-- x --</span>
-    <span class="hint">Click or press F for fullscreen</span>
-  </footer>
 
   <script src="script.js"></script>
 </body>
