@@ -1,0 +1,99 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #0b0f14;
+  color: #e8f1ff;
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Background grid */
+.grid {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(80, 160, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(80, 160, 255, 0.08) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* Moving bar so motion/framerate is easy to check */
+.scanbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 100%;
+  background: linear-gradient(180deg, #4da3ff, #7dffb2);
+  box-shadow: 0 0 24px rgba(77, 163, 255, 0.8);
+  animation: sweep 4s linear infinite;
+}
+
+@keyframes sweep {
+  from { transform: translateX(0); }
+  to   { transform: translateX(100vw); }
+}
+
+/* Centered content */
+.center {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2vh;
+  text-align: center;
+}
+
+.title {
+  font-size: clamp(3rem, 14vw, 14rem);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #4da3ff, #7dffb2, #4da3ff);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shine 3s linear infinite;
+}
+
+@keyframes shine {
+  from { background-position: 0% 50%; }
+  to   { background-position: 200% 50%; }
+}
+
+.clock {
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: clamp(1.2rem, 3.5vw, 3rem);
+  color: #9fb4cc;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Bottom info bar */
+.hud {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 1.2vh 2vw;
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: clamp(0.8rem, 1.4vw, 1.2rem);
+  color: #6f86a1;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+body.fullscreen .hint {
+  opacity: 0;
+}
