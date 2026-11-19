@@ -1,3 +1,13 @@
+:root {
+  --pcb: #07170f;
+  --pcb-light: #0d2a1b;
+  --trace: #1f7a4a;
+  --led: 93, 255, 154;
+  --accent: #1cade7;
+  --text: #e9fff3;
+  --size: min(78vh, 78vw);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -8,92 +18,126 @@ html, body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: #0b0f14;
-  color: #e8f1ff;
-  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  background: var(--pcb);
+  color: var(--text);
+  font-family: "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   cursor: pointer;
   user-select: none;
 }
 
-/* Background grid */
-.grid {
+body.fullscreen {
+  cursor: none;
+}
+
+/* Circuit network canvas */
+#circuit {
   position: fixed;
   inset: 0;
-  background-image:
-    linear-gradient(rgba(80, 160, 255, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(80, 160, 255, 0.08) 1px, transparent 1px);
-  background-size: 60px 60px;
-}
-
-/* Moving bar so motion/framerate is easy to check */
-.scanbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 8px;
+  width: 100%;
   height: 100%;
-  background: linear-gradient(180deg, #4da3ff, #7dffb2);
-  box-shadow: 0 0 24px rgba(77, 163, 255, 0.8);
-  animation: sweep 4s linear infinite;
 }
 
-@keyframes sweep {
-  from { transform: translateX(0); }
-  to   { transform: translateX(100vw); }
-}
-
-/* Centered content */
-.center {
+.vignette {
   position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(7, 23, 15, 0) 35%, rgba(3, 10, 6, 0.85) 100%);
+  pointer-events: none;
+}
+
+/* Center stage */
+.stage {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 44-LED ring */
+.ring {
+  position: relative;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(7, 23, 15, 0.92) 0%, rgba(7, 23, 15, 0.82) 62%, rgba(7, 23, 15, 0) 72%);
+}
+
+.led {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: calc(var(--size) * 0.022);
+  height: calc(var(--size) * 0.022);
+  margin: calc(var(--size) * -0.011);
+  border-radius: 50%;
+  transform: rotate(var(--a)) translateY(calc(var(--size) * -0.47));
+  background: rgba(var(--led), calc(0.1 + var(--b, 0) * 0.9));
+  box-shadow:
+    0 0 calc(var(--b, 0) * 22px) rgba(var(--led), var(--b, 0)),
+    inset 0 0 0 1px rgba(var(--led), 0.25);
+}
+
+.led.big {
+  width: calc(var(--size) * 0.032);
+  height: calc(var(--size) * 0.032);
+  margin: calc(var(--size) * -0.016);
+}
+
+/* Content inside the ring */
+.inner {
+  position: absolute;
   inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2vh;
+  gap: calc(var(--size) * 0.03);
   text-align: center;
 }
 
 .title {
-  font-size: clamp(3rem, 14vw, 14rem);
-  font-weight: 800;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: calc(var(--size) * 0.16);
+  line-height: 0.95;
+  font-weight: 900;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  background: linear-gradient(90deg, #4da3ff, #7dffb2, #4da3ff);
-  background-size: 200% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: shine 3s linear infinite;
+  color: var(--text);
+  text-shadow: 0 0 24px rgba(var(--led), 0.55), 0 0 4px rgba(var(--led), 0.8);
 }
 
-@keyframes shine {
-  from { background-position: 0% 50%; }
-  to   { background-position: 200% 50%; }
+.title span:last-child {
+  color: rgb(var(--led));
 }
 
 .clock {
   font-family: "Consolas", "Courier New", monospace;
-  font-size: clamp(1.2rem, 3.5vw, 3rem);
-  color: #9fb4cc;
+  font-size: calc(var(--size) * 0.045);
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  text-shadow: 0 0 12px rgba(28, 173, 231, 0.6);
   font-variant-numeric: tabular-nums;
 }
 
-/* Bottom info bar */
-.hud {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
+/* Deck key indicators */
+.keys {
   display: flex;
-  justify-content: space-between;
-  padding: 1.2vh 2vw;
-  font-family: "Consolas", "Courier New", monospace;
-  font-size: clamp(0.8rem, 1.4vw, 1.2rem);
-  color: #6f86a1;
-  background: rgba(0, 0, 0, 0.35);
+  gap: calc(var(--size) * 0.018);
 }
 
-body.fullscreen .hint {
-  opacity: 0;
+.keys i {
+  display: block;
+  width: calc(var(--size) * 0.045);
+  height: calc(var(--size) * 0.045);
+  border-radius: 20%;
+  background: rgba(var(--led), 0.08);
+  border: 1px solid rgba(var(--led), 0.3);
+  transition: background 0.15s, box-shadow 0.15s;
+}
+
+.keys i.on {
+  background: rgba(var(--led), 0.95);
+  box-shadow: 0 0 18px rgba(var(--led), 0.9);
 }
